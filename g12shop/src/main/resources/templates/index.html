@@ -17,7 +17,7 @@
 	<!-- Categories Section Begin -->
 	<section class="categories">
 		<div class="container">
-			<div class="row">
+			<div class="row" >
 				<div class="categories__slider owl-carousel">
 					<div class="col-lg-3">
 						<div class="categories__item set-bg" th:data-setbg="@{/user/img/categories/cat-1.jpg}">
@@ -63,21 +63,18 @@
 					</div>
 					<div class="featured__controls">
 						<ul>
-							<li class="active" data-filter="*">All</li>
-							<li data-filter=".oranges">Oranges</li>
-							<li data-filter=".fresh-meat">Fresh Meat</li>
-							<li data-filter=".vegetables">Vegetables</li>
-							<li data-filter=".fastfood">Fastfood</li>
+						<!--  -->
+							<li class="" th:data-filter="@{'.' + ${productType.slug}}" th:each="productType : ${productTypes}" th:text="${productType.name}"></li>
 						</ul>
 					</div>
 				</div>
 			</div>
 			<div class="row featured__filter">
 				
-				<div class="col-lg-3 col-md-4 col-sm-6 mix fastfood vegetables">
+				<div th:class="@{'col-lg-3 col-md-4 col-sm-6 mix ' + ${product.productType.slug}}" th:each="product : ${products}">
 					<div class="featured__item">
 						<div class="featured__item__pic set-bg"
-							th:data-setbg="@{/user/img/featured/feature-8.jpg}">
+							th:data-setbg="@{'/user/img/product' + ${product.id} + '/' + ${product.imgName}}">
 							<ul class="featured__item__pic__hover">
 								<li><a href="#"><i class="fa fa-heart"></i></a></li>
 								<li><a href="#"><i class="fa fa-retweet"></i></a></li>
@@ -86,9 +83,9 @@
 						</div>
 						<div class="featured__item__text">
 							<h6>
-								<a href="#">Crab Pool Security</a>
+								<a href="#" th:text=${product.name}></a>
 							</h6>
-							<h5>$30.00</h5>
+							<h5 th:text="${#numbers.formatCurrency(product.price)}"></h5>
 						</div>
 					</div>
 				</div>
