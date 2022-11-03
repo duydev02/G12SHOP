@@ -85,7 +85,7 @@
 							<h6>
 								<a href="#" th:text=${product.name}></a>
 							</h6>
-							<h5 th:text="${#numbers.formatCurrency(product.price)}"></h5>
+							<h5 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></h5>
 						</div>
 					</div>
 				</div>

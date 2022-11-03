@@ -398,7 +398,7 @@ ol {
 }
 
 .header__top__right__auth a {
-	display: block;
+	display: inline-block;
 	font-size: 14px;
 	color: #1c1c1c;
 }
@@ -3125,6 +3125,9 @@ ol {
 	.humberger__menu__wrapper .slicknav_nav .slicknav_row,
 	.humberger__menu__wrapper .slicknav_nav a {
 		padding: 8px 0;
+	}
+	.humberger__menu__wrapper .slicknav_nav .active a {
+		color: #7fad39;
 	}
 	.humberger__menu__overlay {
 		position: fixed;
