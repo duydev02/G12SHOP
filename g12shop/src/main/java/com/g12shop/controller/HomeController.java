@@ -34,12 +34,9 @@ public class HomeController {
         return "checkout";
     }
 
-    public String doGetBlogDetails() {
-        return "";
-    }
-
-    public String doGetBlog() {
-        return "";
+    @GetMapping("about")
+    public String doGetAbout() {
+        return "about";
     }
 
     @GetMapping("contact")
