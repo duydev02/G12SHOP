@@ -1,6 +1,7 @@
 package com.g12shop.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,12 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping({"", "/index"})
-<<<<<<< HEAD
-    public String doGetHome() {
-=======
     public String doGetHome(Model model) {
     	model.addAttribute("isIndexPage", true);
->>>>>>> b40064c8780919095f4daa9fc074a61d738bc3b6
         return "index";
     }
 
