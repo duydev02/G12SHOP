@@ -58,4 +58,9 @@ public class Products implements Serializable {
 	@JoinColumn(name = "categoryId", referencedColumnName = "id")
 	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
 	private Categories category;
+	
+	@ManyToOne
+	@JoinColumn(name = "productTypeId", referencedColumnName = "id")
+	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+	private ProductTypes productType;
 }

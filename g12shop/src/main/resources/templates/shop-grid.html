@@ -6,22 +6,10 @@
 <meta name="keywords" content="Ogani, unica, creative, html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Ogani | Template</title>
+<title>Ogani | Sản phẩm</title>
 
-<!-- Google Font -->
-<link
-	href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap"
-	rel="stylesheet">
+<th:block th:include="@{/fragments/css}"></th:block>
 
-<!-- Css Styles -->
-<link rel="stylesheet" th:href="@{/user/css/bootstrap.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/font-awesome.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/elegant-icons.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/nice-select.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/jquery-ui.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/owl.carousel.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/slicknav.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/style.css}" type="text/css">
 </head>
 <body>
    
@@ -34,18 +22,9 @@
                 <div class="col-lg-3 col-md-5">
                     <div class="sidebar">
                         <div class="sidebar__item">
-                            <h4>Department</h4>
-                            <ul>
-                                <li><a href="#">Fresh Meat</a></li>
-                                <li><a href="#">Vegetables</a></li>
-                                <li><a href="#">Fruit & Nut Gifts</a></li>
-                                <li><a href="#">Fresh Berries</a></li>
-                                <li><a href="#">Ocean Foods</a></li>
-                                <li><a href="#">Butter & Eggs</a></li>
-                                <li><a href="#">Fastfood</a></li>
-                                <li><a href="#">Fresh Onion</a></li>
-                                <li><a href="#">Papayaya & Crisps</a></li>
-                                <li><a href="#">Oatmeal</a></li>
+                            <h4>Các tỉnh miền Trung</h4>
+                            <ul th:each="category : ${categories}">
+                                <li><a th:href="|/${category.slug}" th:text="${category.name}"></a></li>
                             </ul>
                         </div>
                     </div>

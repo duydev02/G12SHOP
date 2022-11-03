@@ -1,7 +1,6 @@
 package com.g12shop.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,17 +9,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping({"", "/index"})
+<<<<<<< HEAD
+    public String doGetHome() {
+=======
     public String doGetHome(Model model) {
+    	model.addAttribute("isIndexPage", true);
+>>>>>>> b40064c8780919095f4daa9fc074a61d738bc3b6
         return "index";
     }
 
     @GetMapping("shop-grid")
-    public String doGetShopGrid() {
+    public String doGetShopGrid(Model model) {
+    	model.addAttribute("isShopPage", true);
         return "shop-grid";
     }
 
     @GetMapping("shop-details")
-    public String doGetShopDetail() {
+    public String doGetShopDetail(Model model) {
+    	model.addAttribute("isShopPage", true);
         return "shop-details";
     }
 
@@ -34,16 +40,15 @@ public class HomeController {
         return "checkout";
     }
 
-    public String doGetBlogDetails() {
-        return "";
-    }
-
-    public String doGetBlog() {
-        return "";
+    @GetMapping("about")
+    public String doGetAbout(Model model) {
+    	model.addAttribute("isAboutPage", true);
+        return "about";
     }
 
     @GetMapping("contact")
-    public String doGetContact() {
+    public String doGetContact(Model model) {
+    	model.addAttribute("isContactPage", true);
         return "contact";
     }
 

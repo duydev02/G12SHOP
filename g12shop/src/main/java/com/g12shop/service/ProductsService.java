@@ -1,5 +1,9 @@
 package com.g12shop.service;
 
-public interface ProductsService {
+import java.util.List;
 
+import com.g12shop.entity.Products;
+
+public interface ProductsService {
+	List<Products> findAll();
 }

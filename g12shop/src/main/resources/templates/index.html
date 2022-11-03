@@ -6,22 +6,10 @@
 <meta name="keywords" content="Ogani, unica, creative, html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Ogani | Template</title>
+<title>Ogani | Trang chủ</title>
 
-<!-- Google Font -->
-<link
-	href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap"
-	rel="stylesheet">
+<th:block th:include="@{/fragments/css}"></th:block>
 
-<!-- Css Styles -->
-<link rel="stylesheet" th:href="@{/user/css/bootstrap.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/font-awesome.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/elegant-icons.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/nice-select.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/jquery-ui.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/owl.carousel.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/slicknav.min.css}" type="text/css">
-<link rel="stylesheet" th:href="@{/user/css/style.css}" type="text/css">
 </head>
 <body>
 	<th:block th:include="@{/fragments/header}"></th:block>
@@ -29,14 +17,33 @@
 	<!-- Categories Section Begin -->
 	<section class="categories">
 		<div class="container">
-			<div class="row">
+			<div class="row" >
 				<div class="categories__slider owl-carousel">
-					
 					<div class="col-lg-3">
-						<div class="categories__item set-bg"src
-							th:data-setbg="@{/user/img/categories/cat-5.jpg}">
+						<div class="categories__item set-bg" th:data-setbg="@{/user/img/categories/cat-1.jpg}">
 							<h5>
-								<a href="#">drink fruits</a>
+								<a href="#">Bún đậu</a>
+							</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="categories__item set-bg" th:data-setbg="@{/user/img/categories/cat-2.jpg}">
+							<h5>
+								<a href="#">Phở bò</a>
+							</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="categories__item set-bg" th:data-setbg="@{/user/img/categories/cat-3.jpg}">
+							<h5>
+								<a href="#">Nem chua</a>
+							</h5>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="categories__item set-bg" th:data-setbg="@{/user/img/categories/cat-4.jpg}">
+							<h5>
+								<a href="#">Bánh đa</a>
 							</h5>
 						</div>
 					</div>
@@ -56,21 +63,22 @@
 					</div>
 					<div class="featured__controls">
 						<ul>
-							<li class="active" data-filter="*">All</li>
-							<li data-filter=".oranges">Oranges</li>
+						<!--  -->
+							<li class="" th:data-filter="@{'.' + ${productType.slug}}" th:each="productType : ${productTypes}" th:text="${productType.name}"></li>
+							<!-- <li data-filter=".oranges">Oranges</li>
 							<li data-filter=".fresh-meat">Fresh Meat</li>
 							<li data-filter=".vegetables">Vegetables</li>
-							<li data-filter=".fastfood">Fastfood</li>
+							<li data-filter=".fastfood">Fastfood</li> -->
 						</ul>
 					</div>
 				</div>
 			</div>
 			<div class="row featured__filter">
 				
-				<div class="col-lg-3 col-md-4 col-sm-6 mix fastfood vegetables">
+				<div th:class="@{'col-lg-3 col-md-4 col-sm-6 mix ' + ${product.productType.slug}}" th:each="product : ${products}">
 					<div class="featured__item">
 						<div class="featured__item__pic set-bg"
-							th:data-setbg="@{/user/img/featured/feature-8.jpg}">
+							th:data-setbg="@{'/user/img/product' + ${product.id} + '/' + ${product.imgName}}">
 							<ul class="featured__item__pic__hover">
 								<li><a href="#"><i class="fa fa-heart"></i></a></li>
 								<li><a href="#"><i class="fa fa-retweet"></i></a></li>
@@ -79,9 +87,9 @@
 						</div>
 						<div class="featured__item__text">
 							<h6>
-								<a href="#">Crab Pool Security</a>
+								<a href="#" th:text=${product.name}></a>
 							</h6>
-							<h5>$30.00</h5>
+							<h5 th:text="${#numbers.formatCurrency(product.price)}"></h5>
 						</div>
 					</div>
 				</div>
