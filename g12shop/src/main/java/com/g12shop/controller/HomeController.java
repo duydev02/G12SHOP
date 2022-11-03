@@ -11,16 +11,19 @@ public class HomeController {
 
     @GetMapping({"", "/index"})
     public String doGetHome(Model model) {
+    	model.addAttribute("isIndexPage", true);
         return "index";
     }
 
     @GetMapping("shop-grid")
-    public String doGetShopGrid() {
+    public String doGetShopGrid(Model model) {
+    	model.addAttribute("isShopPage", true);
         return "shop-grid";
     }
 
     @GetMapping("shop-details")
-    public String doGetShopDetail() {
+    public String doGetShopDetail(Model model) {
+    	model.addAttribute("isShopPage", true);
         return "shop-details";
     }
 
@@ -35,12 +38,14 @@ public class HomeController {
     }
 
     @GetMapping("about")
-    public String doGetAbout() {
+    public String doGetAbout(Model model) {
+    	model.addAttribute("isAboutPage", true);
         return "about";
     }
 
     @GetMapping("contact")
-    public String doGetContact() {
+    public String doGetContact(Model model) {
+    	model.addAttribute("isContactPage", true);
         return "contact";
     }
 
