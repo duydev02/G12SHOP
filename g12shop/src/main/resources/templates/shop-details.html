@@ -21,7 +21,7 @@
                     <div class="product__details__pic">
                         <div class="product__details__pic__item">
                             <img class="product__details__pic__item--large"
-                                th:src="|/user/img/product/${product.imgName}|" alt="">
+                                th:src="|/user/img/product/${product.slug}/${product.imgName}|" alt="">
                         </div>
                         <div class="product__details__pic__slider owl-carousel">
                             <img th:data-imgbigurl="@{/user/img/product/details/product-details-2.jpg}"
