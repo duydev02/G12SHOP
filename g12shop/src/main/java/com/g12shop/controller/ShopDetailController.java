@@ -20,28 +20,28 @@ import com.g12shop.service.ProductsService;
 @Controller
 @RequestMapping("/")
 public class ShopDetailController {
-	
+
 	@Autowired
 	AccountsService accountsService;
-	
+
 	@Autowired
 	ProductReviewsService productReviewsService;
-	
+
 	@Autowired
 	ProductsService productsService;
-	
+
 	@Autowired
 	ProductImagesService imagesService;
-	
+
 	@Autowired
 	ProductTypesService productTypesService;
-	
-    @GetMapping("shop-details/{id}")
-    public String doGetShopDetail(Model model, @PathVariable("id") Long id) {
-    	Optional<Products> productsid =  productsService.findById(id);
-    	List<ProductReviews> productreviews = productReviewsService.findAllByProductId(id);
-    	model.addAttribute("productid", productsid.get());
-    	model.addAttribute("productrv",productreviews);
-        return "shop-details";
-    }
+
+	@GetMapping("shop-details/{slug}")
+	public String doGetShopDetail(Model model, @PathVariable("slug") String slug) {
+		Optional<Products> product = productsService.findBySlug(slug);
+		List<ProductReviews> productReviews = productReviewsService.findAllByProductId(product.get().getId());
+		model.addAttribute("product", product.get());
+		model.addAttribute("productReviews", productReviews);
+		return "shop-details";
+	}
 }

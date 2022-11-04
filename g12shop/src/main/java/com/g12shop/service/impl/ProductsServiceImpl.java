@@ -27,4 +27,9 @@ public class ProductsServiceImpl implements ProductsService {
 		return repo.findById(id);
 	}
 
+	@Override
+	public Optional<Products> findBySlug(String slug) {
+		return repo.findBySlug(slug);
+	}
+
 }

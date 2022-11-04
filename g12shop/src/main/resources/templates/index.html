@@ -6,7 +6,7 @@
 <meta name="keywords" content="Ogani, unica, creative, html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Ogani | Trang chủ</title>
+<title>G12 | Trang chủ</title>
 
 <th:block th:include="@{/fragments/css}"></th:block>
 
@@ -73,7 +73,7 @@
 				
 				<div th:class="@{'col-lg-3 col-md-4 col-sm-6 mix ' + ${product.productType.slug}}" th:each="product : ${products}">
 					<div class="featured__item">
-						<div class="featured__item__pic set-bg"
+						<div style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|" class="featured__item__pic set-bg"
 							th:data-setbg="@{'/user/img/product' + ${product.id} + '/' + ${product.imgName}}">
 							<ul class="featured__item__pic__hover">
 								<li><a href="#"><i class="fa fa-heart"></i></a></li>
@@ -83,7 +83,7 @@
 						</div>
 						<div class="featured__item__text">
 							<h6>
-								<a href="#" th:text=${product.name}></a>
+								<a th:href="|/shop-details/${product.slug}|" th:text=${product.name}></a>
 							</h6>
 							<h5 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></h5>
 						</div>
