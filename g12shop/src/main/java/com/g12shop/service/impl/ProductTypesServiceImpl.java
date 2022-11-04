@@ -1,6 +1,7 @@
 package com.g12shop.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,4 +21,10 @@ public class ProductTypesServiceImpl implements ProductTypesService{
 		// TODO Auto-generated method stub
 		return repo.findByIsDeleted(Boolean.FALSE);
 	}
+
+	@Override
+	public Optional<ProductTypes> findById(Long id) {
+		return repo.findById(id);
+	}
+	
 }
