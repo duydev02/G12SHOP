@@ -17,7 +17,7 @@ public class ProductTypesServiceImpl implements ProductTypesService{
 	private ProductTypesRepo repo;
 
 	@Override
-	public List<ProductTypes> findAllName() {
+	public List<ProductTypes> findAll() {
 		// TODO Auto-generated method stub
 		return repo.findByIsDeleted(Boolean.FALSE);
 	}
