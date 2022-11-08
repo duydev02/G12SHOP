@@ -3,49 +3,6 @@
     <div class="loader"></div>
 </div>
 
-<!-- Humberger Begin -->
-<div class="humberger__menu__overlay"></div>
-<div class="humberger__menu__wrapper">
-    <div class="humberger__menu__logo">
-        <a href="#"><img th:src="@{/user/img/logo.png}" alt=""></a>
-    </div>
-    <div class="humberger__menu__cart">
-        <ul>
-            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-        </ul>
-        <div class="header__cart__price">item: <span>đ150,000</span></div>
-    </div>
-    <div class="humberger__menu__widget">
-        <div class="header__top__right__auth d-flex">
-            <a href="./login" class="mr-4"><i class="fa fa-user"></i> Đăng nhập</a>
-            <a href="./register"><i class="fa fa-user-plus"></i> Đăng ký</a>
-        </div>
-    </div>
-    <nav class="humberger__menu__nav mobile-menu">
-       <ul>
-           <li th:classappend="${isIndexPage} ? active"><a href="/index">Trang chủ</a></li>
-           <li th:classappend="${isShopPage} ? active"><a href="/shop-grid">Sản phẩm</a></li>
-           <li th:classappend="${isAboutPage} ? active"><a href="/about">Giới thiệu</a></li>
-           <li th:classappend="${isContactPage} ? active"><a href="/contact">Liên hệ</a></li>
-       </ul>
-    </nav>
-    <div id="mobile-menu-wrap"></div>
-    <div class="header__top__right__social">
-        <a href="#"><i class="fa fa-facebook"></i></a>
-        <a href="#"><i class="fa fa-twitter"></i></a>
-        <a href="#"><i class="fa fa-linkedin"></i></a>
-        <a href="#"><i class="fa fa-pinterest-p"></i></a>
-    </div>
-    <div class="humberger__menu__contact">
-        <ul>
-            <li><i class="fa fa-envelope"></i> g12shop@gmail.com</li>
-            <li>Freeship cho đơn từ 299,000đ</li>
-        </ul>
-    </div>
-</div>
-<!-- Humberger End -->
-
 <!-- Header Section Begin -->
 <header class="header">
     <div class="header__top">
@@ -68,8 +25,10 @@
                             <a href="#"><i class="fa fa-pinterest-p"></i></a>
                         </div>
                         <div class="header__top__right__auth">
-                            <a href="./login" class="mr-4"><i class="fa fa-user"></i> Đăng nhập</a>
-            				<a href="./register"><i class="fa fa-user-plus"></i> Đăng ký</a>
+                        	<a th:href="@{/profile}" class="mr-4" th:if="${session.currentUser != null}">Chào, <span th:text="${session.currentUser.fullname}"></span></a>
+                          <a th:href="@{/login}" class="mr-4" th:if="${session.currentUser == null}"><i class="fa fa-user"></i> Đăng nhập</a>
+            				      <a th:href="@{/register}" th:if="${session.currentUser == null}"><i class="fa fa-user-plus"></i> Đăng ký</a>
+            				      <a th:href="@{/logout}" class="mr-4" th:if="${session.currentUser != null}"><i class="fa fa-share"></i> Đăng xuất</a>
                         </div>
                     </div>
                 </div>

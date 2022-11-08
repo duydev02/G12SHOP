@@ -56,14 +56,4 @@ public class HomeController {
     	
         return "contact";
     }
-
-    @GetMapping("login")
-    public String doGetLogin() {
-        return "login";
-    }
-
-    @GetMapping("register")
-    public String doGetRegister() {
-        return "register";
-    }
 }
