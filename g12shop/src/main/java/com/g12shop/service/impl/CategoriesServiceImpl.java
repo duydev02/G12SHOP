@@ -19,4 +19,9 @@ public class CategoriesServiceImpl implements CategoriesService {
 	public List<Categories> findAll() {
 		return repo.findByIsDeleted(Boolean.FALSE);
 	}
+
+	@Override
+	public Categories findBySlug(String slug) {
+		return repo.findBySlugAndIsDeleted(slug, Boolean.FALSE);
+	}
 }

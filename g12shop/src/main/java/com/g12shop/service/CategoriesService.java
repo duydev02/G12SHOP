@@ -7,4 +7,6 @@ import com.g12shop.entity.Categories;
 public interface CategoriesService {
 
 	List<Categories> findAll();
+
+	Categories findBySlug(String slug);
 }
