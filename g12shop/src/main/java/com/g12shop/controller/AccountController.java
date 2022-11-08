@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.g12shop.Constaint.SessionConstaint;
+import com.g12shop.constant.SessionConstaint;
 import com.g12shop.entity.Accounts;
 import com.g12shop.service.AccountsService;
 
