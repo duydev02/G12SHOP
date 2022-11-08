@@ -164,3 +164,18 @@
 	top: -2px;
 	right: -2px;
 }
+
+.product__pagination a {
+	cursor: pointer;
+}
+
+.product__pagination .page__number {
+	pointer-events: none;
+	border-color: #000;
+	color: #000;
+	width: 100px;
+}
+
+.product__pagination .disabled {
+	pointer-events: none;
+}
