@@ -19,7 +19,14 @@
                             <a href="#"><i class="fa fa-pinterest-p"></i></a>
                         </div>
                         <div class="header__top__right__auth">
+<<<<<<< Updated upstream
                             <a href="./login"><i class="fa fa-user"></i> Đăng nhập</a>
+=======
+                        	<a th:href="@{/profile}" class="mr-4" th:if="${session.currentUser != null}">Chào, <span th:text="${session.currentUser.fullname}"></span></a>
+                            <a th:href="@{/login}" class="mr-4" th:if="${session.currentUser == null}"><i class="fa fa-user"></i> Đăng nhập</a>
+            				<a th:href="@{/register}" th:if="${session.currentUser == null}"><i class="fa fa-user-plus"></i> Đăng ký</a>
+            				<a th:href="@{/logout}" class="mr-4" th:if="${session.currentUser != null}"><i class="fa fa-share"></i> Đăng xuất</a>
+>>>>>>> Stashed changes
                         </div>
                     </div>
                 </div>
