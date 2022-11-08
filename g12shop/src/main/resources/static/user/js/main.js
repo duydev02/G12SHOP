@@ -222,27 +222,3 @@
     });
 
 })(jQuery);
-
-$("#search").click(function() {
-	var searchValue = $('#searchValue').val();
-	location.href = "search?key=" + searchValue;
-});
-
-$("#searchValue").keypress(function(e) {
-	if(e.which == 13) {
-		var searchValue = $('#searchValue').val();
-		location.href = "search?key=" + searchValue;
-    }
-});
-
-function isSearchedPage(pageNumber) {
-	var url_string = window.location.href;
-	var url = new URL(url_string);
-	if (document.URL.indexOf('shop-grid') != -1) {
-		var key = url.searchParams.get("key");
-		location.href = "shop-grid?&page=" + pageNumber;
-	} else if (document.URL.indexOf('search') != -1) {
-		var key = url.searchParams.get("key");
-		location.href = "search?key=" + key + "&page=" + pageNumber;
-	}
-}

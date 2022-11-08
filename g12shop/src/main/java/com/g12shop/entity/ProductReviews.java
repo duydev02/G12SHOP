@@ -1,7 +1,6 @@
 package com.g12shop.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,9 +32,6 @@ public class ProductReviews implements Serializable {
 	
 	@Column(name = "description")
 	private String description;
-	
-	@Column(name = "createdDate")
-	private Timestamp createdDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "productId", referencedColumnName = "id")
