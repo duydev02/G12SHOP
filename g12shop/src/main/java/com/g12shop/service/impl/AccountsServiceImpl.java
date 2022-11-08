@@ -1,21 +1,19 @@
 package com.g12shop.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-<<<<<<< Updated upstream
-=======
 import com.g12shop.Util.UserNotFoundExcepion;
 import com.g12shop.config.EncoderConfig;
 import com.g12shop.entity.Accounts;
 import com.g12shop.repository.AccountsRepo;
->>>>>>> Stashed changes
 import com.g12shop.service.AccountsService;
 
 @Service
 public class AccountsServiceImpl implements AccountsService {
-<<<<<<< Updated upstream
 
-=======
 	@Autowired
 	private AccountsRepo repo;
 	
@@ -42,5 +40,4 @@ public class AccountsServiceImpl implements AccountsService {
 			return checkPassword ? accountResponse : null;
 		}
 	}
->>>>>>> Stashed changes
 }
