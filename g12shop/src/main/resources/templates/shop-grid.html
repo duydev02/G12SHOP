@@ -6,7 +6,7 @@
 <meta name="keywords" content="Ogani, unica, creative, html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Ogani | Sản phẩm</title>
+<title>G12 | Sản phẩm</title>
 
 <th:block th:include="@{/fragments/css}"></th:block>
 
@@ -24,22 +24,22 @@
                         <div class="sidebar__item">
                             <h4>Các tỉnh miền Trung</h4>
                             <ul th:each="category : ${categories}">
-                                <li><a th:href="|/${category.slug}" th:text="${category.name}"></a></li>
+                                <li><a th:href="|/shop-grid/${category.slug}|" th:text="${category.name}"></a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-7">
-                    <div class="product__discount">
+                    <div class="product__discount" th:if="${isSearched == null && #lists.size(discountProducts) > 0}">
                         <div class="section-title product__discount__title">
                             <h2>Giảm Giá</h2>
                         </div>
                         <div class="row">
                             <div class="product__discount__slider owl-carousel">
-                                <div class="col-lg-4">
+                                <div class="col-lg-4" th:each="product : ${discountProducts}">
                                     <div class="product__discount__item">
                                         <div class="product__discount__item__pic set-bg"
-                                            th:data-setbg="@{/user/img/product/discount/pd-6.jpg}">
+                                        	th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">
                                             <div class="product__discount__percent">-20%</div>
                                             <ul class="product__item__pic__hover">
                                                 <li><a href="#"><i class="fa fa-heart"></i></a></li>
@@ -48,9 +48,11 @@
                                             </ul>
                                         </div>
                                         <div class="product__discount__item__text">
-                                            <span>Dried Fruit</span>
-                                            <h5><a href="#">Raisin’n’nuts</a></h5>
-                                            <div class="product__item__price">$30.00 <span>$36.00</span></div>
+                                            <span th:text="|Đặc sản ${product.category.name}|"></span>
+                                            <h5><a th:href="|/shop-details/${product.slug}|" th:text=${product.name}></a></h5>
+                                            <div class="product__item__price" th:if="${product.discount > 0}">[[${#numbers.formatDecimal(product.price - (product.price * product.discount / 100), 0, 'COMMA', 0, 'POINT') + ' đ'}]] 
+		                                    	<span th:if="${product.discount > 0}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span>
+		                                    </div>
                                         </div>
                                     </div>
                                 </div>
@@ -64,17 +66,12 @@
                                     <span>Sắp xếp theo</span>
                                     <select>
                                         <option value="">All</option>
-                                        <option th:each="productType : ${productTypes}"
-											th:value="${productType.slug}" 
-											th:text="${productType.name}" 
-											th:selected="${productType.slug} == ${productTypeSelected}">
-										</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4">
                                 <div class="filter__found">
-                                    <h6><span th:text="${#lists.size(products)}"></span> Sản phẩm được tìm thấy</h6>
+                                    <h6><span th:text="${totalProducts}"></span> Sản phẩm được tìm thấy</h6>
                                 </div>
                             </div>
                         </div>
@@ -82,8 +79,9 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-6 col-sm-6" th:each="product : ${products}">
                             <div class="product__item">
-                                <div style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|" class="featured__item__pic set-bg"
+                                <div class="product__item__pic set-bg" style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|"
 									th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">
+									<div class="product__discount__percent" th:if="${product.discount > 0}" th:text="|-${product.discount}%|"></div>
                                     <ul class="product__item__pic__hover">
                                         <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                         <li><a href="#"><i class="fa fa-retweet"></i></a></li>
@@ -94,16 +92,32 @@
                                     <h6>
                                     	<a th:href="|/shop-details/${product.slug}|" th:text=${product.name}></a>
                                     </h6>
-                                    <h5 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></h5>
+                                    <div class="product__item__price" th:unless="${product.discount > 0}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
+                                    <div class="product__item__price" th:if="${product.discount > 0}">[[${#numbers.formatDecimal(product.price - (product.price * product.discount / 100), 0, 'COMMA', 0, 'POINT') + ' đ'}]] 
+                                    	<span th:if="${product.discount > 0}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="product__pagination">
-                        <a href="#">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#"><i class="fa fa-long-arrow-right"></i></a>
+                    <div class="product__pagination" th:if="${totalPages > 1}">
+                    	<a th:class="${currentPage == 1 ? 'disabled' : ''}"
+                    		th:onclick="'isSearchedPage('+ ${currentPage > 1 ? 1 : 1} +')'"
+                    		th:text="1">
+                    	</a>
+                        <a th:class="${currentPage == 1 ? 'disabled' : ''}"
+                        	th:onclick="'isSearchedPage('+ ${currentPage > 1 ? currentPage-1 : 1} +')'">
+                        	<i class="fa fa-long-arrow-left"></i>
+                        </a>
+                        <a class="page__number" th:text="|Trang ${currentPage}|"></a>
+                        <a th:class="${currentPage == totalPages ? 'disabled' : '' }"
+                        	th:onclick="'isSearchedPage('+ ${currentPage < totalPages ? currentPage+1 : totalPages} +')'">
+                        	<i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <a th:class="${currentPage == totalPages ? 'disabled' : '' }"
+                        	th:onclick="'isSearchedPage('+ ${currentPage < totalPages ? totalPages : totalPages} +')'"
+                        	th:text="${totalPages}">
+                        </a>
                     </div>
                 </div>
             </div>

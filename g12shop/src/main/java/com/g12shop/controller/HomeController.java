@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.g12shop.service.CategoriesService;
 import com.g12shop.service.ProductTypesService;
 import com.g12shop.service.ProductsService;
 
@@ -18,30 +19,18 @@ public class HomeController {
 	
 	@Autowired
 	private ProductTypesService productTypesService;
+	
+	@Autowired
+	private CategoriesService categoriesService;
 
     @GetMapping({"", "/index"})
     public String doGetHome(Model model) {
     	model.addAttribute("isIndexPage", true);
     	
+    	model.addAttribute("categories", categoriesService.findAll());
     	model.addAttribute("products", productsService.findAll());
     	model.addAttribute("productTypes", productTypesService.findAll());
         return "index";
-    }
-
-    @GetMapping("shop-grid")
-    public String doGetShopGrid(Model model) {
-    	model.addAttribute("isShopPage", true);
-    	
-    	model.addAttribute("products", productsService.findAll());
-    	model.addAttribute("productTypes", productTypesService.findAll());
-        return "shop-grid";
-    }
-
-    @GetMapping("shop-details")
-    public String doGetShopDetail(Model model) {
-    	model.addAttribute("isShopPage", true);
-    	
-        return "shop-details";
     }
 
     @GetMapping("shopping-cart")

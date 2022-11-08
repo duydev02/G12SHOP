@@ -128,7 +128,7 @@ ol {
 	bottom: -15px;
 	right: 0;
 	height: 4px;
-	width: 80px;
+	width: 140px;
 	background: #7fad39;
 	content: "";
 	margin: 0 auto;
@@ -674,7 +674,7 @@ ol {
 	top: 14px;
 }
 
-.hero__search__form form input {
+.hero__search__form div input {
 	width: 70%;
 	border: none;
 	height: 48px;
@@ -687,7 +687,7 @@ ol {
 	color: #b2b2b2;
 }
 
-.hero__search__form form button {
+.hero__search__form div button {
 	position: absolute;
 	right: 0;
 	top: -1px;
@@ -1286,7 +1286,9 @@ ol {
 	overflow: hidden;
 }
 
-.product__discount__item__pic .product__discount__percent {
+.product__discount__item__pic .product__discount__percent,
+.product__item__pic .product__discount__percent,
+.featured__item__pic .product__discount__percent {
 	height: 45px;
 	width: 45px;
 	background: #dd2222;
@@ -1366,7 +1368,8 @@ ol {
 	padding-top: 20px;
 }
 
-.product__discount__item__text span {
+.product__discount__item__text span,
+.product__item__text span {
 	font-size: 14px;
 	color: #b2b2b2;
 	display: block;
@@ -1381,13 +1384,15 @@ ol {
 	color: #1c1c1c;
 }
 
-.product__discount__item__text .product__item__price {
+.product__discount__item__text .product__item__price,
+.product__item__text .product__item__price {
 	font-size: 18px;
 	color: #1c1c1c;
 	font-weight: 700;
 }
 
-.product__discount__item__text .product__item__price span {
+.product__discount__item__text .product__item__price span,
+.product__item__text .product__item__price span {
 	display: inline-block;
 	font-weight: 400;
 	text-decoration: line-through;
