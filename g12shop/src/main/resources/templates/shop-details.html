@@ -78,7 +78,7 @@
                                             </fieldset>
                                         </form>
                                         
-                                        <h3>4 Comments</h3>
+                                        <h3 th:text="${#lists.size(productReviews) > 0 ? #lists.size(productReviews) : 'Chưa có'} + ' đánh giá'"></h3>
                                         <!-- COMMENT 1 - START -->
                                         <div class="media" th:if=${productReviews} th:each="productReview : ${productReviews}">
                                             <a class="pull-left" href="#"><img class="media-object" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt=""></a>

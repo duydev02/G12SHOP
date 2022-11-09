@@ -15,12 +15,10 @@ import com.g12shop.entity.Accounts;
 import com.g12shop.entity.Roles;
 import com.g12shop.repository.AccountsRepo;
 import com.g12shop.service.AccountsService;
-
 import com.g12shop.service.RolesService;
+import com.g12shop.util.UserNotFoundExcepion;
 
 import net.bytebuddy.utility.RandomString;
-
-import com.g12shop.Util.UserNotFoundExcepion;
 
 
 @Service
