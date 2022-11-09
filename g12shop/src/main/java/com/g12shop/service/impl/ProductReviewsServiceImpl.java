@@ -34,7 +34,7 @@ public class ProductReviewsServiceImpl implements ProductReviewsService {
 	@Override
 	public List<ProductReviews> findAllByProductId(Long id) {
 		// TODO Auto-generated method stub
-		return productReviewsRepo.findAllByProductId(id);
+		return productReviewsRepo.findByProductIdOrderByCreatedDate(id);
 	}
 	
 	

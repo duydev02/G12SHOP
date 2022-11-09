@@ -9,7 +9,7 @@ import com.g12shop.config.EncoderConfig;
 import com.g12shop.entity.Accounts;
 import com.g12shop.repository.AccountsRepo;
 import com.g12shop.service.AccountsService;
-import com.g12shop.Util.UserNotFoundExcepion;
+import com.g12shop.util.UserNotFoundExcepion;
 
 @Service
 public class AccountsServiceImpl implements AccountsService {

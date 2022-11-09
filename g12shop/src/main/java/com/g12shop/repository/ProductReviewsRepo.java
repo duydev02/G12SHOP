@@ -12,6 +12,6 @@ public interface ProductReviewsRepo extends JpaRepository<ProductReviews, Long> 
 
 	List<ProductReviews> findAllById(Long id);
 
-	List<ProductReviews> findAllByProductId(Long id);
+	List<ProductReviews> findByProductIdOrderByCreatedDate(Long id);
 
 }
