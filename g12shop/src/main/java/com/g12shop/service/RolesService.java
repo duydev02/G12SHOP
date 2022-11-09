@@ -1,5 +1,7 @@
 package com.g12shop.service;
 
-public interface RolesService {
+import com.g12shop.entity.Roles;
 
+public interface RolesService {
+	Roles findByName(String name);
 }

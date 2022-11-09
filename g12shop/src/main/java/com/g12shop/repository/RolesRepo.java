@@ -7,5 +7,6 @@ import com.g12shop.entity.Roles;
 
 @Repository
 public interface RolesRepo extends JpaRepository<Roles, Long> {
-
+	
+	Roles findByName(String name);
 }
