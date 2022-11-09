@@ -1,3 +1,53 @@
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- Humberger Begin -->
+<div class="humberger__menu__overlay"></div>
+<div class="humberger__menu__wrapper">
+    <div class="humberger__menu__logo">
+        <a href="/index"><img th:src="@{/user/img/logo.png}" alt=""></a>
+    </div>
+    <div class="humberger__menu__cart">
+        <ul>
+            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
+            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+        </ul>
+        <div class="header__cart__price">item: <span>đ150,000</span></div>
+    </div>
+    <div class="humberger__menu__widget">
+        <div class="header__top__right__auth d-flex flex-column">
+            <a th:href="@{/profile}" th:if="${session.currentUser != null}">Chào, <span class="font-weight-bold" th:text="${session.currentUser.fullname}"></span></a>
+            <a th:href="@{/login}" th:if="${session.currentUser == null}"><i class="fa fa-user"></i> Đăng nhập</a>
+			<a th:href="@{/register}" class="mt-2" th:if="${session.currentUser == null}"><i class="fa fa-user-plus"></i> Đăng ký</a>
+			<a th:href="@{/logout}" class="mt-2" th:if="${session.currentUser != null}"><i class="fa fa-share"></i> Đăng xuất</a>
+        </div>
+    </div>
+    <nav class="humberger__menu__nav mobile-menu">
+       <ul>
+           <li th:classappend="${isIndexPage} ? active"><a href="/index">Trang chủ</a></li>
+           <li th:classappend="${isShopPage} ? active"><a href="/shop-grid">Sản phẩm</a></li>
+           <li th:classappend="${isAboutPage} ? active"><a href="/about">Giới thiệu</a></li>
+           <li th:classappend="${isContactPage} ? active"><a href="/contact">Liên hệ</a></li>
+       </ul>
+    </nav>
+    <div id="mobile-menu-wrap"></div>
+    <div class="header__top__right__social">
+        <a href="#"><i class="fa fa-facebook"></i></a>
+        <a href="#"><i class="fa fa-twitter"></i></a>
+        <a href="#"><i class="fa fa-linkedin"></i></a>
+        <a href="#"><i class="fa fa-pinterest-p"></i></a>
+    </div>
+    <div class="humberger__menu__contact">
+        <ul>
+            <li><i class="fa fa-envelope"></i> g12shop@gmail.com</li>
+            <li>Freeship cho đơn từ 299,000đ</li>
+        </ul>
+    </div>
+</div>
+<!-- Humberger End -->
+
 <!-- Header Section Begin -->
 <header class="header">
     <div class="header__top">
@@ -9,6 +59,7 @@
                             <li><i class="fa fa-envelope"></i> g12shop@gmail.com</li>
                             <li>Freeship cho đơn từ 299,000đ</li>
                         </ul>
+                    </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <div class="header__top__right">
@@ -19,7 +70,7 @@
                             <a href="#"><i class="fa fa-pinterest-p"></i></a>
                         </div>
                         <div class="header__top__right__auth">
-                        	<a th:href="@{/profile}" class="mr-4" th:if="${session.currentUser != null}">Chào, <span th:text="${session.currentUser.fullname}"></span></a>
+                        	<a th:href="@{/profile}" class="mr-4" th:if="${session.currentUser != null}">Chào, <span class="font-weight-bold" th:text="${session.currentUser.fullname}"></span></a>
                             <a th:href="@{/login}" class="mr-4" th:if="${session.currentUser == null}"><i class="fa fa-user"></i> Đăng nhập</a>
             				<a th:href="@{/register}" th:if="${session.currentUser == null}"><i class="fa fa-user-plus"></i> Đăng ký</a>
             				<a th:href="@{/logout}" class="mr-4" th:if="${session.currentUser != null}"><i class="fa fa-share"></i> Đăng xuất</a>
@@ -33,24 +84,24 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <a href="./index"><img th:src="@{/user/img/logo.png}" alt=""></a>
+                    <a href="/index"><img th:src="@{/user/img/logo.png}" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6">
                 <nav class="header__menu">
                     <ul>
-                        <li th:classappend="${isIndexPage} ? active"><a href="./index">Trang chủ</a></li>
-			           <li th:classappend="${isShopPage} ? active"><a href="./shop-grid">Sản phẩm</a></li>
-			           <li th:classappend="${isAboutPage} ? active"><a href="./about">Giới thiệu</a></li>
-			           <li th:classappend="${isContactPage} ? active"><a href="./contact">Liên hệ</a></li>
+                        <li th:classappend="${isIndexPage} ? active"><a href="/index">Trang chủ</a></li>
+			           <li th:classappend="${isShopPage} ? active"><a href="/shop-grid">Sản phẩm</a></li>
+			           <li th:classappend="${isAboutPage} ? active"><a href="/about">Giới thiệu</a></li>
+			           <li th:classappend="${isContactPage} ? active"><a href="/contact">Liên hệ</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="col-lg-3">
                 <div class="header__cart">
                     <div class="header__cart__price modified__cart">
-                    	Giỏ hàng: <span class="mr-2">150,000đ</span>
-                    	<a href="shopping-cart" class="ms-2">
+                    	Giỏ hàng: <span th:text="${#numbers.formatDecimal(150000, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span>
+                    	<a href="shopping-cart">
                     		<i class="fa fa-shopping-bag"></i> 
                     		<span>3</span>
                     	</a>
@@ -61,7 +112,6 @@
         <div class="humberger__open">
             <i class="fa fa-bars"></i>
         </div>
-    </div>
     </div>
 </header>
 <!-- Header Section End -->
@@ -78,7 +128,7 @@
                     </div>
                     <ul>
                         <th:block th:each="category : ${categories}">
-                        <li><a th:href="|shop-grid/ + ${category.slug}|" th:text="|${category.name}|"></a></li>
+                        <li><a th:href="|/shop-grid/${category.slug}|" th:text="|${category.name}|"></a></li>
                         </th:block>
                     </ul>
                 </div>
@@ -86,10 +136,10 @@
             <div class="col-lg-9">
                 <div class="hero__search">
                     <div class="hero__search__form">
-                        <form action="#">
-                            <input type="text" placeholder="Bạn cần gì?">
-                            <button type="submit" class="site-btn">TÌM</button>
-                        </form>
+                        <div>
+                            <input id="searchValue" type="text" placeholder="Bạn cần gì?">
+                            <button id="search" type="submit" class="site-btn">TÌM</button>
+                        </div>
                     </div>
                 </div>
             </div>

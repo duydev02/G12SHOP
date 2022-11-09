@@ -1,4 +1,4 @@
-package com.g12shop.Constaint;
+package com.g12shop.constant;
 
 public class SessionConstaint {
 

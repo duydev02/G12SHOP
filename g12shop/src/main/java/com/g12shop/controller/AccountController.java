@@ -14,13 +14,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-<<<<<<< Updated upstream
-import com.g12shop.Constaint.SessionConstaint;
-=======
 import com.g12shop.Util.SessionUtil;
 import com.g12shop.Util.UserNotFoundExcepion;
 import com.g12shop.constant.SessionConstaint;
->>>>>>> Stashed changes
 import com.g12shop.entity.Accounts;
 import com.g12shop.service.AccountsService;
 

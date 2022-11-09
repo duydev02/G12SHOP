@@ -10,18 +10,18 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.g12shop.Util.UserNotFoundExcepion;
 import com.g12shop.config.EncoderConfig;
 import com.g12shop.entity.Accounts;
 import com.g12shop.entity.Roles;
 import com.g12shop.repository.AccountsRepo;
 import com.g12shop.service.AccountsService;
-<<<<<<< Updated upstream
-=======
+
 import com.g12shop.service.RolesService;
 
 import net.bytebuddy.utility.RandomString;
->>>>>>> Stashed changes
+
+import com.g12shop.util.UserNotFoundExcepion;
+
 
 @Service
 @Transactional(rollbackOn = { Exception.class, Throwable.class })
