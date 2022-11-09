@@ -3,7 +3,7 @@ package com.g12shop.service;
 import java.util.List;
 
 import com.g12shop.entity.Accounts;
-import com.g12shop.util.UserNotFoundExcepion;
+import com.g12shop.Util.UserNotFoundExcepion;
 
 public interface AccountsService {
 

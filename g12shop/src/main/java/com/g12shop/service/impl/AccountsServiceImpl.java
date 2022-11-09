@@ -20,7 +20,7 @@ import com.g12shop.service.RolesService;
 
 import net.bytebuddy.utility.RandomString;
 
-import com.g12shop.util.UserNotFoundExcepion;
+import com.g12shop.Util.UserNotFoundExcepion;
 
 
 @Service

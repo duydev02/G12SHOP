@@ -1,4 +1,4 @@
-package com.g12shop.util;
+package com.g12shop.Util;
 
 public class UserNotFoundExcepion extends Exception{
 
