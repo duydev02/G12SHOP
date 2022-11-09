@@ -13,6 +13,5 @@ public interface AccountsRepo extends JpaRepository<Accounts, Long> {
 	
 	//login
 	Accounts findByUsernameOrEmailAndIsEnabledAndIsDeleted(String username, String email, Boolean isEnabled, Boolean isDeleted);
-	
-	
+	Accounts findByVerificationCode(String verificationCode);
 }

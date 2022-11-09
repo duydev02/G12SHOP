@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -56,6 +58,7 @@ public class Accounts implements Serializable {
 	private String verificationCode;
 	
 	@Column(name = "createdDate")
+	@CreationTimestamp
 	private Timestamp createdDate;
 	
 	@Column(name = "imgUrl")

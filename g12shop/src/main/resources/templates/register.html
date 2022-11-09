@@ -19,26 +19,28 @@
         <div class="card border-0 shadow rounded-3 my-5">
             <div class="card-body p-4 p-sm-5">
                 <h5 class="card-title text-center text-uppercase text-primary font-weight-bold">Đăng ký</h5>
-                <form>
+                 	<h3 style="color:red" th:text="${message}"></h3>
+                <form method = "post" th:object="${accountRequest}" th:action="@{/register}">
                     <div class="form-floating mb-3">
                         <label for="floatingInput">Tên đăng nhập</label>
-                        <input type="text" class="form-control" id="floatingInput" placeholder="">
+                        <input type="text" class="form-control" name="username" id="floatingInput" placeholder="">
                     </div>
                     <div class="form-floating mb-3">
                         <label for="floatingInput">Email</label>
-                        <input type="email" class="form-control" id="floatingInput" placeholder="">
+                        <input type="email" class="form-control" name="email" id="floatingInput" placeholder="">
                     </div>
                     <div class="form-floating mb-3">
                         <label for="floatingInput">Họ và tên</label>
-                        <input type="text" class="form-control" id="floatingInput" placeholder="">
+                        <input type="text" class="form-control" name="fullname" id="floatingInput" placeholder="">
                     </div>
                     <div class="form-floating mb-3">
                         <label for="floatingPassword">Mật khẩu</label>
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="">
+                        <input type="password" class="form-control" name="hashPassword" id="newPassword"
+                        required autofocus placeholder="">
                     </div>
                     <div class="form-floating mb-3">
                         <label for="floatingPassword">Xác nhận mật khẩu</label>
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="">
+                        <input type="password" class="form-control" required id="confirmPassword" oninput="checkPasswordMatch(this);">
                     </div>
                     <div class="form-floating mb-3">
                         <div>
@@ -46,7 +48,7 @@
                         </div>
                     </div>
                     <div class="d-grid text-center">
-                        <button class="btn btn-primary btn-login text-uppercase fw-bold" type="button">
+                        <button class="btn btn-primary btn-login text-uppercase fw-bold" name="send" type="submit">
                             Đăng ký
                         </button>
                     </div>
@@ -67,6 +69,16 @@
 <script th:src="@{/user/js/mixitup.min.js}"></script>
 <script th:src="@{/user/js/owl.carousel.min.js}"></script>
 <script th:src="@{/user/js/main.js}"></script>
+<script type="text/javascript">
+function checkPasswordMatch(fieldConfirmPassword) {
+	if (fieldConfirmPassword.value != $("#newPassword").val()) {
+		fieldConfirmPassword
+				.setCustomValidity("Mật Khẩu Không hợp lệ!");
+	} else {
+		fieldConfirmPassword.setCustomValidity("");
+	}
+}
+</script>
 </body>
 
 </html>
