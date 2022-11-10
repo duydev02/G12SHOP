@@ -12,8 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.g12shop.config.EncoderConfig;
 import com.g12shop.constant.SessionConstaint;
 import com.g12shop.entity.Accounts;
 import com.g12shop.service.AccountsService;
@@ -25,6 +27,9 @@ public class AccountController {
 	
 	@Autowired
 	private AccountsService accountsService;
+	
+	@Autowired
+	private EncoderConfig encoderConfig;
 	
     @GetMapping("/login")
     public String doGetLogin(Model model) {
@@ -109,5 +114,28 @@ public class AccountController {
 			ra.addFlashAttribute("message", e.getMessage());
 			return "redirect:/register";
 		}
+    }
+    
+    @PostMapping("/change-password")
+    public String doPostChangePassword(HttpServletRequest request, @RequestParam("oldPassword")String oldPassword,
+    		@RequestParam("newPassword")String newPassword, HttpSession session,
+    		Model model, RedirectAttributes ra) {
+    	Accounts accounts = (Accounts) session.getAttribute(SessionConstaint.CURRENT_USER);
+    	
+    	if(accounts == null) {
+    		ra.addFlashAttribute("message", "Please Login!");
+    		return "redirect:/login";
+    	}else if(oldPassword.equals(newPassword)) {
+    		ra.addFlashAttribute("message", "Your new pasword must be different than the old one, try again!");
+    		return "redirect:/change-password";
+    	}else if(!encoderConfig.passwordEncoder().matches(oldPassword, accounts.getHashPassword())) {
+    		ra.addFlashAttribute("message", "Your old password is incorrect!");
+    		return "redirect:/change-password";
+    	}else{
+    		accountsService.changePassword(accounts, newPassword);
+    		session.removeAttribute(SessionConstaint.CURRENT_USER);
+    		ra.addFlashAttribute("message", "Your password has been changed successfully!");
+    		return "redirect:/login";
+    	}
     }
 }

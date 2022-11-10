@@ -115,6 +115,14 @@ public class AccountsServiceImpl implements AccountsService {
 		}
 	}
 	
+	@Override
+	public void changePassword(Accounts account, String newPassword) {
+		// TODO Auto-generated method stub
+		String hashPassword = encoderConfig.passwordEncoder().encode(newPassword);
+		account.setHashPassword(hashPassword);
+		repo.saveAndFlush(account);
+	}
+	
 	private Boolean existsUsername(String username) {
 		return repo.findByUsername(username) != null ? true : false;
 	}

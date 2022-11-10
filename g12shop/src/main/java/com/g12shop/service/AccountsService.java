@@ -18,4 +18,7 @@ public interface AccountsService {
 	void sendVerificationEmail(Accounts account, String siteURL) throws Exception;
 	//verification
 	Boolean verificationAccount(String verificationCode);
+	
+	//change-password
+	void changePassword(Accounts account, String newPassword);
 }
