@@ -20,20 +20,19 @@ import com.g12shop.util.UserNotFoundExcepion;
 
 import net.bytebuddy.utility.RandomString;
 
-
 @Service
 @Transactional(rollbackOn = { Exception.class, Throwable.class })
 public class AccountsServiceImpl implements AccountsService {
 
 	@Autowired
 	private AccountsRepo repo;
-	
+
 	@Autowired
 	private EncoderConfig encoderConfig;
-	
+
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Autowired
 	private RolesService rolesService;
 
@@ -44,16 +43,18 @@ public class AccountsServiceImpl implements AccountsService {
 
 	@Override
 	public Accounts doLogin(String usernameOrEmail, String password) throws UserNotFoundExcepion {
-		Accounts accountResponse = repo.findByUsernameOrEmailAndIsEnabledAndIsDeleted(usernameOrEmail, usernameOrEmail, Boolean.TRUE, Boolean.FALSE);
-		
-		if(accountResponse == null) {
+		Accounts accountResponse = repo.findByUsernameOrEmailAndIsEnabledAndIsDeleted(usernameOrEmail, usernameOrEmail,
+				Boolean.TRUE, Boolean.FALSE);
+
+		if (accountResponse == null) {
 			throw new UserNotFoundExcepion("Account is not exists!");
-		}else if(accountResponse.getIsEnabled() == false) {
+		} else if (accountResponse.getIsEnabled() == false) {
 			throw new UserNotFoundExcepion("Account not activated!");
-		}else if(accountResponse.getIsDeleted() == true) {
+		} else if (accountResponse.getIsDeleted() == true) {
 			throw new UserNotFoundExcepion("Account has been deleted");
-		}else {
-			Boolean checkPassword = encoderConfig.passwordEncoder().matches(password, accountResponse.getHashPassword());
+		} else {
+			Boolean checkPassword = encoderConfig.passwordEncoder().matches(password,
+					accountResponse.getHashPassword());
 			return checkPassword ? accountResponse : null;
 		}
 	}
@@ -77,56 +78,54 @@ public class AccountsServiceImpl implements AccountsService {
 			return repo.saveAndFlush(account);
 		}
 	}
-	
+
 	@Override
 	public void sendVerificationEmail(Accounts account, String siteURL) throws Exception {
 		String subject = "G12SHOP - Verify your register";
 		String senderName = "G12SHOP";
 		String mailContent = "<p>Dear: " + account.getFullname() + ", </p>";
 		mailContent += "<p>Please click the link below to cofirm your register!</p>";
-		
+
 		String verifiURL = siteURL + "/verify?verificationCode=" + account.getVerificationCode();
 		mailContent += "<h1><a href = \"" + verifiURL + "\">Verification</a></h1>";
 		mailContent += "<p> Thank You </p>";
-		
+
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
-		
+
 		helper.setFrom("lamnhps16063@fpt.edu.vn", senderName);
 		helper.setTo(account.getEmail());
 		helper.setSubject(subject);
 		helper.setText(mailContent, true);
-		
+
 		mailSender.send(message);
 	}
-	
+
 	@Override
 	public Boolean verificationAccount(String verificationCode) {
-		// TODO Auto-generated method stub
 		Accounts account = repo.findByVerificationCode(verificationCode);
-		
-		if(account == null || account.getIsEnabled()) {
+
+		if (account == null || account.getIsEnabled()) {
 			return false;
-		}else {
+		} else {
 			account.setVerificationCode(null);
 			account.setIsEnabled(Boolean.TRUE);
 			repo.saveAndFlush(account);
 			return true;
 		}
 	}
-	
+
 	@Override
 	public void changePassword(Accounts account, String newPassword) {
-		// TODO Auto-generated method stub
 		String hashPassword = encoderConfig.passwordEncoder().encode(newPassword);
 		account.setHashPassword(hashPassword);
 		repo.saveAndFlush(account);
 	}
-	
+
 	private Boolean existsUsername(String username) {
 		return repo.findByUsername(username) != null ? true : false;
 	}
-	
+
 	private Boolean existsEmail(String email) {
 		return repo.findByEmail(email) != null ? true : false;
 	}
