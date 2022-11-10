@@ -44,6 +44,21 @@ public class AccountController {
     	return "redirect:/index";
     }
     
+    @GetMapping("/change-password")
+    public String doGetChangePassword() {
+    	return "/change-password";
+    }
+    
+    @GetMapping("/forgot-password")
+    public String doGetForgotPassword() {
+    	return "/forgot-password";
+    }
+    
+    @GetMapping("/reset-password")
+    public String doGetResetPassword() {
+    	return "/reset-password";
+    }
+    
     @GetMapping("/verify")
     public String verifyAccount(@Param("verificationCode") String verificationCode, RedirectAttributes ra) {
     	if(accountsService.verificationAccount(verificationCode)) {
