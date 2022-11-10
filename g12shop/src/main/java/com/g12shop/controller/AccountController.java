@@ -1,5 +1,8 @@
 package com.g12shop.controller;
 
+import java.io.UnsupportedEncodingException;
+
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -22,6 +25,8 @@ import com.g12shop.entity.Accounts;
 import com.g12shop.service.AccountsService;
 import com.g12shop.util.SessionUtil;
 import com.g12shop.util.UserNotFoundExcepion;
+
+import net.bytebuddy.utility.RandomString;
 
 @Controller
 public class AccountController {
@@ -55,11 +60,6 @@ public class AccountController {
 		return "/forgot-password";
 	}
 
-	@GetMapping("/reset-password")
-	public String doGetResetPassword() {
-		return "/reset-password";
-	}
-
 	@GetMapping("/verify")
 	public String verifyAccount(@Param("verificationCode") String verificationCode, RedirectAttributes ra) {
 		if (accountsService.verificationAccount(verificationCode)) {
@@ -68,6 +68,19 @@ public class AccountController {
 		} else {
 			ra.addFlashAttribute("message", "The code is expired. please try again!");
 			return "redirect:/register";
+		}
+	}
+	
+	@GetMapping("/reset-password")
+	public String doGetResetPassword(@Param("token")String token, RedirectAttributes ra, Model model) {
+		Accounts account = accountsService.getResetPasswordToken(token);
+		
+		if(account == null || token == null) {
+			ra.addFlashAttribute("message", "the token has expired, try again!");
+			return "redirect:/forgot-password";
+		}else {
+			model.addAttribute("token", token);
+			return "reset-password";
 		}
 	}
 
@@ -151,6 +164,39 @@ public class AccountController {
 			accountsService.changePassword(account, newPassword);
 			session.removeAttribute(SessionConstaint.CURRENT_USER);
 			ra.addFlashAttribute("message", "Your password has been changed successfully!");
+			return "redirect:/login";
+		}
+	}
+	
+	@PostMapping("/forgot-password")
+	public String doPostForgotPassword(@RequestParam("email")String email, HttpServletRequest request, RedirectAttributes ra) {
+		String token = RandomString.make(30);
+		
+		try {
+			accountsService.forgotPassword(token, email);
+			
+			String linkPasswordReset = SessionUtil.getSiteURL(request) + "/reset-password?token=" + token;
+			accountsService.sendMailActivated(email, linkPasswordReset);
+			ra.addFlashAttribute("message", "we have send a reset password link to your email, please check.");
+		} catch (UserNotFoundExcepion e) {
+			ra.addFlashAttribute("message", e.getMessage());
+		}catch (UnsupportedEncodingException | MessagingException e) {
+			ra.addFlashAttribute("message", "Error while sending email.");
+		}
+		return "redirect:/forgot-password";
+	}
+	
+	@PostMapping("/reset-password")
+	public String doPostResetPassword(@RequestParam("token")String token, @RequestParam("password")String password, 
+			HttpServletRequest request, RedirectAttributes ra)throws Exception{
+		Accounts account = accountsService.getResetPasswordToken(token);
+		
+		if(account == null) {
+			ra.addFlashAttribute("message", "Invalid Token");
+			return "redirect:/forgot-password";
+		}else {
+			accountsService.updatePassword(account, password);
+			ra.addFlashAttribute("message", "You have successfully changed your password, please login");
 			return "redirect:/login";
 		}
 	}

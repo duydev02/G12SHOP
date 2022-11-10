@@ -43,6 +43,7 @@
 					<div class="featured__controls">
 						<ul>
 						<!--  -->
+							<li class="" data-filter=".all">All</li>
 							<li class="" th:data-filter="@{'.' + ${productType.slug}}" th:each="productType : ${productTypes}" th:text="${productType.name}"></li>
 						</ul>
 					</div>
@@ -50,7 +51,7 @@
 			</div>
 			<div class="row featured__filter">
 				
-				<div th:class="@{'col-lg-3 col-md-4 col-sm-6 mix ' + ${product.productType.slug}}" th:each="product : ${products}">
+				<div th:class="@{'col-lg-3 col-md-4 col-sm-6 mix all ' + ${product.productType.slug}}" th:each="product : ${products}">
 					<div class="featured__item">
 						<div style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|" class="featured__item__pic set-bg"
 							th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">

@@ -1,7 +1,9 @@
 package com.g12shop.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 
@@ -121,7 +123,59 @@ public class AccountsServiceImpl implements AccountsService {
 		account.setHashPassword(hashPassword);
 		repo.saveAndFlush(account);
 	}
+	
+	@Override
+	public Accounts getResetPasswordToken(String token) {
+		// TODO Auto-generated method stub
+		return repo.findByResetPasswordToken(token);
+	}
 
+	@Override
+	public void forgotPassword(String token, String email) throws UserNotFoundExcepion {
+		Accounts account = repo.findByEmailAndIsEnabledAndIsDeleted(email, Boolean.TRUE, Boolean.FALSE);
+		
+		if(account == null) {
+			throw new UserNotFoundExcepion("Could not find any customer with email" + email); 
+		}else if(account.getIsEnabled() == false) {
+			throw new UserNotFoundExcepion("Account not activated"); 
+		}else if(account.getIsDeleted() == true) {
+			throw new UserNotFoundExcepion("Account has been deleted"); 
+		}else {
+			account.setResetPasswordToken(token);
+			repo.saveAndFlush(account);
+		}
+	}
+
+	@Override
+	public void updatePassword(Accounts account, String newPassword) {
+		String hashPassword = encoderConfig.passwordEncoder().encode(newPassword);
+		
+		account.setHashPassword(hashPassword);
+		account.setResetPasswordToken(null);
+		repo.saveAndFlush(account);
+	}
+
+	@Override
+	public void sendMailActivated(String email, String linkResetPassword)
+			throws UnsupportedEncodingException, MessagingException {
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+		
+		helper.setFrom("contact@G12SHOP.com", "G12SHOpP SUPPORT");
+		helper.setTo(email);
+		
+		String subject = "Here the link to reset your password";
+		
+		String content = "<p>Hello,</p>" + "<p>You have requested to reset your password.</p>"
+				+ "<p>Click the link below to change your password: </p>" + "<p><a href=\"" + linkResetPassword + "\">Change My Password</a></p>"
+				+ "<br>" + "<p>Ignore this email if you do remember your password, "
+				+ " or you have not made the request. </p>";
+		
+		helper.setSubject(subject);
+		helper.setText(content);
+		mailSender.send(message);
+	}
+	
 	private Boolean existsUsername(String username) {
 		return repo.findByUsername(username) != null ? true : false;
 	}
