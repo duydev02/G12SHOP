@@ -80,9 +80,9 @@ public class AccountsServiceImpl implements AccountsService {
 	
 	@Override
 	public void sendVerificationEmail(Accounts account, String siteURL) throws Exception {
-		String subject = "Please verify your register";
+		String subject = "G12SHOP - Verify your register";
 		String senderName = "G12SHOP";
-		String mailContent = "<p>Dear:" + account.getFullname() + ", </p>";
+		String mailContent = "<p>Dear: " + account.getFullname() + ", </p>";
 		mailContent += "<p>Please click the link below to cofirm your register!</p>";
 		
 		String verifiURL = siteURL + "/verify?verificationCode=" + account.getVerificationCode();
