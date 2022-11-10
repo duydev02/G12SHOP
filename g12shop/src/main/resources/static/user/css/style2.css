@@ -267,6 +267,11 @@
 	background: rgb(0 0 0 / 5%);
 }
 
+.user__profile .shopping__cart__quantity {
+	color: #7fad39;
+	margin-left: 4px;
+}
+
 .humberger__menu__widget .user__profile .sub__menu {
 	left: 10px;
 	right: unset;

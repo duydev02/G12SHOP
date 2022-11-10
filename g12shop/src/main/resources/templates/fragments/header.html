@@ -21,13 +21,13 @@
             <div class="d-inline-block"><a th:href="@{/login}" class="mr-4" th:if="${session.currentUser == null}"><i class="fa fa-user"></i> Đăng nhập</a></div>
 			<div class="d-inline-block"><a th:href="@{/register}" th:if="${session.currentUser == null}"><i class="fa fa-user-plus"></i> Đăng ký</a></div>
            	<div class="d-inline-block user__profile" th:if="${session.currentUser != null}">
-           		<a th:href="@{/profile}">
+           		<a th:href="@{'/profile/' + ${session.currentUser.username}}">
            			Chào, <span class="font-weight-bold" th:text="${session.currentUser.fullname}"></span>
            		</a>
            		<ul class="sub__menu">
-					<li><a th:href="@{'/profile/' + ${session.currentUser.username}}">Hồ sơ</a></li>
 					<li><a href="/shopping-cart">Giỏ hàng</a></li>
-					<li><a href="/change-password">Đổi mật khẩu</a></li>
+					<li><a th:href="@{'/profile/' + ${session.currentUser.username}}">Hồ sơ</a></li>
+					<li><a th:href="@{'/security/' + ${session.currentUser.username}}">Bảo mật</a></li>
 					<li><a href="/logout">Đăng xuất</a></li>
 				</ul>
             </div>
@@ -82,13 +82,13 @@
                             <div class="d-inline-block"><a th:href="@{/login}" class="mr-4" th:if="${session.currentUser == null}"><i class="fa fa-user"></i> Đăng nhập</a></div>
             				<div class="d-inline-block"><a th:href="@{/register}" th:if="${session.currentUser == null}"><i class="fa fa-user-plus"></i> Đăng ký</a></div>
                         	<div class="d-inline-block user__profile" th:if="${session.currentUser != null}">
-                        		<a th:href="@{/profile}">
+                        		<a th:href="@{'/profile/' + ${session.currentUser.username}}">
                         			Chào, <span class="font-weight-bold" th:text="${session.currentUser.fullname}"></span>
                         		</a>
                         		<ul class="sub__menu">
+									<li><a href="/shopping-cart">Giỏ hàng<span class="shopping__cart__quantity">(3)</span></a></li>
 									<li><a th:href="@{'/profile/' + ${session.currentUser.username}}">Hồ sơ</a></li>
-									<li><a href="/shopping-cart">Giỏ hàng</a></li>
-									<li><a href="/change-password">Đổi mật khẩu</a></li>
+									<li><a th:href="@{'/security/' + ${session.currentUser.username}}">Bảo mật</a></li>
 									<li><a href="/logout">Đăng xuất</a></li>
 								</ul>
                         	</div>
