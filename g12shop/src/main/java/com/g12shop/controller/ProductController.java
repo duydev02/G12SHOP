@@ -1,7 +1,9 @@
 package com.g12shop.controller;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,15 +13,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.g12shop.constant.SessionConstaint;
+import com.g12shop.entity.Accounts;
 import com.g12shop.entity.Categories;
 import com.g12shop.entity.ProductReviews;
 import com.g12shop.entity.Products;
 import com.g12shop.service.CategoriesService;
 import com.g12shop.service.ProductReviewsService;
 import com.g12shop.service.ProductsService;
+import com.g12shop.util.UserNotFoundExcepion;
 
 @Controller
 @RequestMapping("/")
@@ -30,7 +37,7 @@ public class ProductController {
 
 	@Autowired
 	ProductsService productsService;
-	
+
 	@Autowired
 	CategoriesService categoriesService;
 
@@ -96,11 +103,10 @@ public class ProductController {
 		model.addAttribute("relatedProducts", relatedProducts);
 		return "shop-details";
 	}
-	
+
 	@GetMapping("/search")
 	public String search(@RequestParam("key") String key,
-			@RequestParam(value = "page", required = false, defaultValue = "1") int page, Model model,
-			HttpSession session) {
+			@RequestParam(value = "page", required = false, defaultValue = "1") int page, Model model) {
 		List<Products> products = new ArrayList<>();
 		try {
 			Page<Products> pageProducts = productsService.findByKeywords(key, PAGE_SIZE, page);
@@ -114,5 +120,27 @@ public class ProductController {
 		model.addAttribute("isSearched", Boolean.TRUE);
 		model.addAttribute("products", products);
 		return "shop-grid";
+	}
+
+	@PostMapping("/product/comment")
+	public String comment(@RequestParam("productId") Long productId, @RequestParam("message") String message,
+			RedirectAttributes ra, Model model, HttpSession session) throws UserNotFoundExcepion {
+		Accounts account = (Accounts) session.getAttribute(SessionConstaint.CURRENT_USER);
+		if (account == null) {
+			throw new UserNotFoundExcepion("Chưa đăng nhập");
+		}
+		ProductReviews productReviewNewest = productReviewsService.findTopByAccountIdOrderByCreatedDateDesc(account.getId());
+		Timestamp timestamp = productReviewNewest.getCreatedDate();
+		long now = System.currentTimeMillis(); // See note below
+		long then = timestamp.getTime();
+		long minutes = TimeUnit.MILLISECONDS.toMinutes(now - then);
+		if (minutes > 1) {
+			productReviewsService.createReview(productId, account.getId(), message);
+		} else {
+			model.addAttribute("commentMessage", "Thí chủ xin dừng bước, bình luận đã quá nhanh. *1phuthon");
+		}
+		List<ProductReviews> productReviews = productReviewsService.findAllByProductId(productId);
+		model.addAttribute("productReviews", productReviews);
+		return "shop-details::#comment-list";
 	}
 }
