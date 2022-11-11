@@ -12,6 +12,7 @@ import com.g12shop.service.ProductReviewsService;
 
 @Service
 public class ProductReviewsServiceImpl implements ProductReviewsService {
+
 	@Autowired
 	ProductReviewsRepo productReviewsRepo;
 
@@ -36,6 +37,15 @@ public class ProductReviewsServiceImpl implements ProductReviewsService {
 		// TODO Auto-generated method stub
 		return productReviewsRepo.findByProductIdOrderByCreatedDateDesc(id);
 	}
-	
-	
+
+	@Override
+	public void createReview(Long productId, Long accountId, String message) {
+		productReviewsRepo.createReview(productId, accountId, message);
+	}
+
+	@Override
+	public ProductReviews findTopByAccountIdOrderByCreatedDateDesc(Long accountId) {
+		return productReviewsRepo.findTopByAccountIdOrderByCreatedDateDesc(accountId);
+	}
+
 }

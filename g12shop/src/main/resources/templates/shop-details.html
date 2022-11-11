@@ -63,7 +63,7 @@
                             <div class="container">   
                                 <div class="row d-flex flex-wrap justify-content-center">
                                     <div class="col-sm-8">   
-                                        <form>
+                                        <form id="foo" method="post" th:action="|/comment/${product.id}|">
                                             <h3 class="pull-left">New Comment</h3>
                                             <button type="submit" class="btn btn-primary pull-right">Submit</button>
                                             <fieldset>
@@ -72,25 +72,27 @@
                                                         <img class="img-responsive" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-9 col-lg-10">
-                                                        <textarea class="form-control" id="message" placeholder="Your message" required=""></textarea>
+                                                        <textarea class="form-control" id="message" name="message" placeholder="Your message" required></textarea>
                                                     </div>
                                                 </div>  	
                                             </fieldset>
+                                            <input type="hidden" name="productId" th:value="${product.id}">
                                         </form>
                                         
-                                        <h3 th:text="${#lists.size(productReviews) > 0 ? #lists.size(productReviews) : 'Chưa có'} + ' đánh giá'"></h3>
-                                        <!-- COMMENT 1 - START -->
-                                        <div class="media" th:if=${productReviews} th:each="productReview : ${productReviews}">
-                                            <a class="pull-left" href="#"><img class="media-object" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt=""></a>
-                                            <div class="media-body">
-                                                <h4 class="media-heading" th:text="${productReview.account.fullname}"></h4>
-                                                <p th:text="${productReview.description}"></p>
-                                                <ul class="list-unstyled list-inline media-detail pull-left">
-                                                    <li><i class="fa fa-calendar"></i><span th:text="${#dates.format(productReview.createdDate, 'dd-MMM-yyyy HH:mm')}"></span></li>
-                                                </ul>
-                                            </div>
+                                        <div id="comment-list">
+	                                        <div class="pull-right" th:text="${commentMessage}"></div>
+	                                        <h3 th:text="${#lists.size(productReviews) > 0 ? #lists.size(productReviews) : 'Chưa có'} + ' đánh giá'"></h3>                                     
+	                                        <div class="media" th:if=${productReviews} th:each="productReview : ${productReviews}">
+	                                            <a class="pull-left" href="#"><img class="media-object" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt=""></a>
+	                                            <div class="media-body">
+	                                                <h4 class="media-heading" th:text="${productReview.account.fullname}"></h4>
+	                                                <p th:text="${productReview.description}"></p>
+	                                                <ul class="list-unstyled list-inline media-detail pull-left">
+	                                                    <li><i class="fa fa-calendar"></i><span th:text="${#dates.format(productReview.createdDate, 'dd-MMM-yyyy HH:mm')}"></span></li>
+	                                                </ul>
+	                                            </div>
+	                                        </div>
                                         </div>
-                                        <!-- COMMENT 1 - END -->
                                     </div>
                                 </div>
                             </div>
@@ -152,6 +154,46 @@
     <script th:src="@{/user/js/mixitup.min.js}"></script>
     <script th:src="@{/user/js/owl.carousel.min.js}"></script>
     <script th:src="@{/user/js/main.js}"></script>
+    
+    <script>
+ 	// Variable to hold request
+    var request;
+
+    // Bind to the submit event of our form
+    $("#foo").submit(function(event){
+
+        // Prevent default posting of form - put here to work in case of errors
+        event.preventDefault();
+
+        // Abort any pending request
+        if (request) {
+            request.abort();
+        }
+        // setup some local variables
+        var $form = $(this);
+
+        // Let's select and cache all the fields
+        var $inputs = $form.find("input, select, button, textarea");
+
+        // Serialize the data in the form
+        var serializedData = $form.serialize();
+
+        // Fire off the request to /form.php
+        $.ajax({
+            url: "/product/comment",
+            type: "post",
+            data: serializedData,
+            success: function(data) {
+            	$('#message').val('');
+				$('#comment-list').replaceWith(data);
+			},
+			error: function(data) {
+				window.location.href = "/login";
+			}
+        });
+
+    });
+    </script>
 </body>
 
 </html>

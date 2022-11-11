@@ -2,7 +2,11 @@ package com.g12shop.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.g12shop.entity.ProductReviews;
@@ -14,5 +18,13 @@ public interface ProductReviewsRepo extends JpaRepository<ProductReviews, Long> 
 
 	// select * from product_reviews where productId = ? order by createdDate DESC
 	List<ProductReviews> findByProductIdOrderByCreatedDateDesc(Long id);
+
+	@Query(value = "INSERT INTO product_reviews (productId, accountId, [description], createdDate) "
+			+ "VALUES (?, ?, ?, GETDATE())", nativeQuery = true)
+	@Modifying
+    @Transactional
+	void createReview(Long productId, Long accountId, String message);
+
+	ProductReviews findTopByAccountIdOrderByCreatedDateDesc(Long accountId);
 
 }
