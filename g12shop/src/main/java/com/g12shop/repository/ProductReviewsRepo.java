@@ -16,6 +16,7 @@ public interface ProductReviewsRepo extends JpaRepository<ProductReviews, Long> 
 
 	List<ProductReviews> findAllById(Long id);
 
+	// select * from product_reviews where productId = ? order by createdDate DESC
 	List<ProductReviews> findByProductIdOrderByCreatedDateDesc(Long id);
 
 	@Query(value = "INSERT INTO product_reviews (productId, accountId, [description], createdDate) "

@@ -17,6 +17,4 @@ public interface AccountsRepo extends JpaRepository<Accounts, Long> {
 	
 	//Take token 
 	Accounts findByResetPasswordToken(String token);
-	//forgot-password
-	Accounts findByEmailAndIsEnabledAndIsDeleted(String email, Boolean isEnabled, Boolean isDeleted);
 }

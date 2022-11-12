@@ -132,13 +132,13 @@ public class AccountsServiceImpl implements AccountsService {
 
 	@Override
 	public void forgotPassword(String token, String email) throws UserNotFoundExcepion {
-		Accounts account = repo.findByEmailAndIsEnabledAndIsDeleted(email, Boolean.TRUE, Boolean.FALSE);
+		Accounts account = repo.findByEmail(email);
 		
 		if(account == null) {
-			throw new UserNotFoundExcepion("Could not find any customer with email" + email); 
-		}else if(account.getIsEnabled() == false) {
+			throw new UserNotFoundExcepion("Could not find any customer with email " + email); 
+		}else if(!account.getIsEnabled()) {
 			throw new UserNotFoundExcepion("Account not activated"); 
-		}else if(account.getIsDeleted() == true) {
+		}else if(account.getIsDeleted()) {
 			throw new UserNotFoundExcepion("Account has been deleted"); 
 		}else {
 			account.setResetPasswordToken(token);
@@ -161,18 +161,20 @@ public class AccountsServiceImpl implements AccountsService {
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		
-		helper.setFrom("contact@G12SHOP.com", "G12SHOpP SUPPORT");
+		helper.setFrom("contact@G12SHOP.com", "G12SHOP SUPPORT");
 		helper.setTo(email);
 		
 		String subject = "Here the link to reset your password";
 		
 		String content = "<p>Hello,</p>" + "<p>You have requested to reset your password.</p>"
-				+ "<p>Click the link below to change your password: </p>" + "<p><a href=\"" + linkResetPassword + "\">Change My Password</a></p>"
-				+ "<br>" + "<p>Ignore this email if you do remember your password, "
+				+ "<p>Click the link below to change your password: </p>" 
+				+ "<h1><a href=\"" + linkResetPassword + "\">Change My Password</a></h1>" + "<br>" 
+				+ "<p> Ignore this email if you do remember your password, "
 				+ " or you have not made the request. </p>";
 		
+		
 		helper.setSubject(subject);
-		helper.setText(content);
+		helper.setText(content, true);
 		mailSender.send(message);
 	}
 	
