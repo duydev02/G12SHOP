@@ -34,7 +34,7 @@
                     <div class="product__details__text">
                         <h3 th:text="${product.name}"></h3>
                         <div class="product__details__price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
-                        <p th:text="${product.description}"></p>
+                        <!-- <p th:text="${product.description}"></p> -->
                         <div class="product__details__quantity">
                             <div class="quantity">
                                 <div class="pro-qty">
@@ -42,11 +42,13 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="primary-btn">ADD TO CARD</a>
+                        <a href="#" class="primary-btn">THÊM VÀO GIỎ HÀNG</a>
                         <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
                         <ul>
-                            <li><b>Availability</b> <span>In Stock</span></li>
-                            <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li>
+                            <li><b>Mô tả</b> <span class="d-block mb-4" th:text="${product.description}"></span></li>
+                            <li><b>Đặc sản</b> <span th:text="${product.category.name}"></span></li>
+                            <li><b>Loại</b> <span th:text="${product.productType.name}"></span></li>
+                            <!-- <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span></li> -->
                             <li><b>Share on</b>
                                 <div class="share">
                                     <a href="#"><i class="fa fa-facebook"></i></a>
