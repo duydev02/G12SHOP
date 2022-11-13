@@ -117,7 +117,7 @@ public class AccountController {
 				session.setAttribute(SessionConstaint.CURRENT_USER, accountResponse);
 				return "redirect:/index";
 			} else {
-				ra.addFlashAttribute("message", "Tài khoản hoặc mật khẩu không đúng");
+				ra.addFlashAttribute("message", "Mật khẩu không chính xác");
 				return "redirect:/login";
 			}
 		} catch (UserNotFoundExcepion e) {
