@@ -90,13 +90,13 @@
                     <div class="row featured__filter">
                         <div th:class="@{'col-lg-4 col-md-6 col-sm-6 mix all ' + ${product.productType.slug}}" th:each="product : ${products}">
                             <div class="product__item">
-                                <div class="product__item__pic set-bg" style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|"
+                                <div class="product__item__pic set-bg" style="cursor: pointer;" th:attr="onclick=|shopDetailPage('${product.slug}')|"
 									th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">
 									<div class="product__discount__percent" th:if="${product.discount > 0}" th:text="|-${product.discount}%|"></div>
                                     <ul class="product__item__pic__hover">
                                         <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                         <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                        <li><a th:attr="onclick=|addToCart('${product.id}')|"><i class="fa fa-shopping-cart"></i></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">

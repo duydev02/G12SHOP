@@ -281,3 +281,23 @@
 	left: 25%;
 	right: unset;
 }
+
+.login__page,
+.register__page {
+	margin-bottom: 80px;
+}
+
+.login__page a,
+.register__page a {
+	color: #7fad39;
+}
+
+.login__page a:hover,
+.register__page a:hover {
+	color: #218838;
+}
+
+.login__page .btn,
+.register__page .btn {
+	width: 120px;
+}

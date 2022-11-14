@@ -11,6 +11,7 @@ import com.g12shop.service.ProductImagesService;
 
 @Service
 public class ProductImagesServiceImpl implements ProductImagesService {
+	
 	@Autowired
 	ProductImagesRepo imagesRepo;
 

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.g12shop.constant.SessionConstaint;
+import com.g12shop.constant.SessionConstant;
 import com.g12shop.entity.Accounts;
 import com.g12shop.entity.Categories;
 import com.g12shop.entity.ProductReviews;
@@ -130,7 +130,7 @@ public class ProductController {
 	@PostMapping("/product/comment")
 	public String comment(@RequestParam("productId") Long productId, @RequestParam("message") String message,
 			RedirectAttributes ra, Model model, HttpSession session) throws UserNotFoundExcepion {
-		Accounts account = (Accounts) session.getAttribute(SessionConstaint.CURRENT_USER);
+		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
 		if (account == null) {
 			throw new UserNotFoundExcepion("Chưa đăng nhập");
 		}

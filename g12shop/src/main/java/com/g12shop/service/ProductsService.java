@@ -1,7 +1,6 @@
 package com.g12shop.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
@@ -10,7 +9,7 @@ import com.g12shop.entity.Products;
 
 public interface ProductsService {
 
-	Optional<Products> findById(Long id);
+	Products findById(Long id);
 
 	Products findBySlug(String slug);
 

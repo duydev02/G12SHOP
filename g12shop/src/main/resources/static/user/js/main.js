@@ -223,11 +223,18 @@
 
 })(jQuery);
 
+// Chuyen den trang chi tiet sp
+function shopDetailPage(productSlug) {
+	location.href = "/shop-details/" + productSlug;
+}
+
+// Tim kiem khi input 'Tim kiem' co su thay doi
 $("#search").click(function() {
 	var searchValue = $('#searchValue').val();
 	location.href = "search?key=" + searchValue;
 });
 
+// Tim kiem khi nhan Enter trong khi dang focus input 'Tim kiem'
 $("#searchValue").keypress(function(e) {
 	if(e.which == 13) {
 		var searchValue = $('#searchValue').val();
@@ -235,6 +242,7 @@ $("#searchValue").keypress(function(e) {
     }
 });
 
+// Chuyen trang kem theo 'tu khoa tim kiem' (neu co)
 function isSearchedPage(pageNumber) {
 	var url_string = window.location.href;
 	var url = new URL(url_string);
@@ -245,4 +253,25 @@ function isSearchedPage(pageNumber) {
 		var key = url.searchParams.get("key");
 		location.href = "search?key=" + key + "&page=" + pageNumber;
 	}
+}
+
+// Ngan event click icon cua sp thi chuyen den trang chi tiet sp
+$(".product__item__pic__hover li a").click(function(event) {
+	event.stopPropagation();
+})
+
+// Them san pham voi so luong 1 vao gio hang
+function addToCart(productId) {
+	var endpoint = '/api/cart/update?productId=' + productId + '&quantity=1&isReplace=false';
+	$.ajax({
+		url: endpoint,
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			console.log(data);
+		},
+		error: function (data) {
+			alert('Không thể thêm sản phẩm vào giỏ hàng, hãy thử lại!');
+		}
+	})
 }

@@ -33,11 +33,6 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("shopping-cart")
-    public String doGetShoppingCart() {
-        return "shopping-cart";
-    }
-
     @GetMapping("checkout")
     public String doGetCheckout() {
         return "checkout";

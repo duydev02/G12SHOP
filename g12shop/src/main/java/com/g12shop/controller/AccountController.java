@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.g12shop.config.EncoderConfig;
-import com.g12shop.constant.SessionConstaint;
+import com.g12shop.constant.SessionConstant;
 import com.g12shop.entity.Accounts;
 import com.g12shop.service.AccountsService;
 import com.g12shop.util.SessionUtil;
@@ -51,7 +51,7 @@ public class AccountController {
 
 	@GetMapping("/logout")
 	public String doGetLogout(HttpSession session) {
-		session.removeAttribute(SessionConstaint.CURRENT_USER);
+		session.removeAttribute(SessionConstant.CURRENT_USER);
 		return "redirect:/index";
 	}
 
@@ -86,7 +86,7 @@ public class AccountController {
 
 	@GetMapping("/profile/{username}")
 	public String doGetProfile(@PathVariable("username") String username, HttpSession session, Model model) {
-		Accounts account = (Accounts) session.getAttribute(SessionConstaint.CURRENT_USER);
+		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
 		if (!username.equals(account.getUsername())) {
 			return "redirect:/index";
 		}
@@ -96,7 +96,7 @@ public class AccountController {
 
 	@GetMapping("/security/{username}")
 	public String doGetSecurity(@PathVariable("username") String username, HttpSession session) {
-		Accounts account = (Accounts) session.getAttribute(SessionConstaint.CURRENT_USER);
+		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
 		if (!username.equals(account.getUsername())) {
 			return "redirect:/index";
 		}
@@ -114,7 +114,7 @@ public class AccountController {
 			Accounts accountResponse = accountsService.doLogin(accountRequest.getUsername(),
 					accountRequest.getHashPassword());
 			if (accountResponse != null) {
-				session.setAttribute(SessionConstaint.CURRENT_USER, accountResponse);
+				session.setAttribute(SessionConstant.CURRENT_USER, accountResponse);
 				return "redirect:/index";
 			} else {
 				ra.addFlashAttribute("message", "Mật khẩu không chính xác");
@@ -149,7 +149,7 @@ public class AccountController {
 	@PostMapping("/change-password")
 	public String doPostChangePassword(@RequestParam("currentPassword") String currentPassword,
 			@RequestParam("newPassword") String newPassword, RedirectAttributes ra, HttpSession session) {
-		Accounts account = (Accounts) session.getAttribute(SessionConstaint.CURRENT_USER);
+		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
 
 		if (account == null) {
 			ra.addFlashAttribute("message", "Please Login!");
@@ -162,7 +162,7 @@ public class AccountController {
 			return "redirect:/security/" + account.getUsername();
 		} else {
 			accountsService.changePassword(account, newPassword);
-			session.removeAttribute(SessionConstaint.CURRENT_USER);
+			session.removeAttribute(SessionConstant.CURRENT_USER);
 			ra.addFlashAttribute("message", "Your password has been changed successfully!");
 			return "redirect:/login";
 		}
