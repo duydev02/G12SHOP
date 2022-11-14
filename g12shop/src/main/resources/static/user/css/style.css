@@ -1098,10 +1098,16 @@ ol {
 }
 
 .sidebar__item ul li a {
-	font-size: 16px;
+	font-size: 18px;
 	color: #1c1c1c;
 	line-height: 39px;
 	display: block;
+	transition: all, 0.3s;
+}
+
+.sidebar__item ul li a:hover {
+	color: #7fad39;
+	margin-left: 10px;
 }
 
 .sidebar__item .latest-product__text {
@@ -1369,7 +1375,8 @@ ol {
 }
 
 .product__discount__item__text span,
-.product__item__text span {
+.product__item__text span,
+.featured__item__text span {
 	font-size: 14px;
 	color: #b2b2b2;
 	display: block;
@@ -1385,14 +1392,16 @@ ol {
 }
 
 .product__discount__item__text .product__item__price,
-.product__item__text .product__item__price {
+.product__item__text .product__item__price,
+.featured__item__text .product__item__price {
 	font-size: 18px;
 	color: #1c1c1c;
 	font-weight: 700;
 }
 
 .product__discount__item__text .product__item__price span,
-.product__item__text .product__item__price span {
+.product__item__text .product__item__price span,
+.featured__item__text .product__item__price span {
 	display: inline-block;
 	font-weight: 400;
 	text-decoration: line-through;

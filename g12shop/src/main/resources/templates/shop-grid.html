@@ -78,7 +78,17 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-sm-6" th:each="product : ${products}">
+						<div class="col-lg-12">
+							<div class="featured__controls">
+								<ul>
+									<li class="" data-filter=".all">All</li>
+									<li class="" th:data-filter="@{'.' + ${productType.slug}}" th:each="productType : ${productTypes}" th:text="${productType.name}"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+                    <div class="row featured__filter">
+                        <div th:class="@{'col-lg-4 col-md-6 col-sm-6 mix all ' + ${product.productType.slug}}" th:each="product : ${products}">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|"
 									th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">
@@ -90,6 +100,7 @@
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
+                                	<span th:text="|Đặc sản ${product.category.name}|"></span>
                                     <h6>
                                     	<a th:href="|/shop-details/${product.slug}|" th:text=${product.name}></a>
                                     </h6>

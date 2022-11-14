@@ -25,6 +25,7 @@ import com.g12shop.entity.ProductReviews;
 import com.g12shop.entity.Products;
 import com.g12shop.service.CategoriesService;
 import com.g12shop.service.ProductReviewsService;
+import com.g12shop.service.ProductTypesService;
 import com.g12shop.service.ProductsService;
 import com.g12shop.util.UserNotFoundExcepion;
 
@@ -40,6 +41,9 @@ public class ProductController {
 
 	@Autowired
 	CategoriesService categoriesService;
+	
+	@Autowired
+	ProductTypesService productTypesService;
 
 	private static final int PAGE_SIZE = 9;
 
@@ -60,6 +64,7 @@ public class ProductController {
 		model.addAttribute("totalProducts", productsService.findAll().size());
 		List<Products> discountProducts = productsService.findByDiscount();
 		model.addAttribute("discountProducts", discountProducts);
+		model.addAttribute("productTypes", productTypesService.findAll());
 		return "shop-grid";
 	}
 

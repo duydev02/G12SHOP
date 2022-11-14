@@ -56,6 +56,7 @@
 					<div class="featured__item">
 						<div style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|" class="featured__item__pic set-bg"
 							th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">
+							<div class="product__discount__percent" th:if="${product.discount > 0}" th:text="|-${product.discount}%|"></div>
 							<ul class="featured__item__pic__hover">
 								<li><a href="#"><i class="fa fa-heart"></i></a></li>
 								<li><a href="#"><i class="fa fa-retweet"></i></a></li>
@@ -63,10 +64,14 @@
 							</ul>
 						</div>
 						<div class="featured__item__text">
+							<span th:text="|Đặc sản ${product.category.name}|"></span>
 							<h6>
 								<a th:href="|/shop-details/${product.slug}|" th:text=${product.name}></a>
 							</h6>
-							<h5 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></h5>
+							<div class="product__item__price" th:unless="${product.discount > 0}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
+                            <div class="product__item__price" th:if="${product.discount > 0}">[[${#numbers.formatDecimal(product.price - (product.price * product.discount / 100), 0, 'COMMA', 0, 'POINT') + ' đ'}]] 
+                            	<span th:if="${product.discount > 0}" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span>
+                            </div>
 						</div>
 					</div>
 				</div>
