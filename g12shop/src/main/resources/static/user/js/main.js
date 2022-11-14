@@ -268,10 +268,14 @@ function addToCart(productId) {
 		type: 'GET',
 		dataType: 'json',
 		success: function (data) {
-			console.log(data);
+			$('.headerTotalPrice').text(numberWithDot(data.totalPrice));
 		},
 		error: function (data) {
 			alert('Không thể thêm sản phẩm vào giỏ hàng, hãy thử lại!');
 		}
 	})
+}
+
+function numberWithDot(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' đ';
 }
