@@ -23,31 +23,37 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th class="shoping__product">Products</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
+                                    <th class="shoping__product">Sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng</th>
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
+                            <tbody id="viewCartFragment">
+                                <tr th:each="detail : ${session.currentCart.details}">
                                     <td class="shoping__cart__item">
-                                        <img src="/user/img/cart/cart-3.jpg" alt="">
-                                        <h5>Organic Bananas</h5>
+                                        <img th:src="|/user/img/product/${detail.value.slug}/${detail.value.imgName}|" alt=""
+                                        	style="width: 80px;">
+                                        <h5 th:text="${detail.value.name}"></h5>
+                                        <div th:text="${detail.value.discount > 0 ? '- Giảm ' + detail.value.discount + '% -' : ''}"
+                                        	style="display: inline; font-size: 14px; margin-left: 10px; font-weight: 600; color: #7fad39;"></div>
                                     </td>
                                     <td class="shoping__cart__price">
-                                        $69.00
+                                    	[[${#numbers.formatDecimal(detail.value.price, 0, 'COMMA', 0, 'POINT') + ' đ'}]]
                                     </td>
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
                                             <div class="pro-qty">
-                                                <input type="text" value="1">
+                                                <input type="text" th:value="${detail.value.quantity}" min="1" step="1">
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="shoping__cart__total">
-                                        $69.99
+                                    <td class="shoping__cart__total" th:unless="${detail.value.discount > 0}">
+                                        [[${#numbers.formatDecimal(detail.value.price, 0, 'COMMA', 0, 'POINT') + ' đ'}]]
+                                    </td>
+                                    <td class="shoping__cart__total" th:if="${detail.value.discount > 0}">
+                                        [[${#numbers.formatDecimal((detail.value.price - (detail.value.price * detail.value.discount / 100)) * detail.value.quantity, 0, 'COMMA', 0, 'POINT') + ' đ'}]]
                                     </td>
                                     <td class="shoping__cart__item__close">
                                         <span class="icon_close"></span>
@@ -72,12 +78,13 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="shoping__checkout">
-                        <h5>Cart Total</h5>
+                        <h5>Giỏ hàng</h5>
                         <ul>
-                            <li>Subtotal <span>$454.98</span></li>
-                            <li>Total <span>$454.98</span></li>
+                            <li>Tổng sản phẩm <span th:text="${#numbers.formatDecimal(session.currentCart.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span></li>
+                            <li>Phí ship <span>30,000 đ</span></li>
+                            <li>Tất cả <span th:text="${#numbers.formatDecimal(session.currentCart.totalPrice + 30000, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span></li>
                         </ul>
-                        <a href="checkout" class="primary-btn">PROCEED TO CHECKOUT</a>
+                        <a href="checkout" class="primary-btn">THANH TOÁN</a>
                     </div>
                 </div>
             </div>

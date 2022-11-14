@@ -12,9 +12,9 @@
     <div class="humberger__menu__cart">
         <ul>
             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span th:text="${session.currentCart.totalQuantity}"></span></a></li>
+            <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span class="headerTotalQuantity" th:text="${session.currentCart.totalQuantity}"></span></a></li>
         </ul>
-        <div class="header__cart__price">item: <span th:text="${#numbers.formatDecimal(session.currentCart.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span></div>
+        <div class="header__cart__price">item: <span class="headerTotalPrice" th:text="${#numbers.formatDecimal(session.currentCart.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span></div>
     </div>
     <div class="humberger__menu__widget">
         <div class="header__top__right__auth d-flex flex-column">
@@ -25,7 +25,7 @@
            			Chào, <span class="font-weight-bold" th:text="${session.currentUser.fullname}"></span>
            		</a>
            		<ul class="sub__menu">
-					<li><a href="/cart">Giỏ hàng<span class="shopping__cart__quantity" th:text="|(${session.currentCart.totalQuantity})|"></span></a></li>
+					<li><a href="/cart">Giỏ hàng<span class="shopping__cart__quantity headerTotalQuantity" th:text="|${session.currentCart.totalQuantity}|"></span></a></li>
 					<li><a th:href="@{'/profile/' + ${session.currentUser.username}}">Hồ sơ</a></li>
 					<li><a th:href="@{'/security/' + ${session.currentUser.username}}">Bảo mật</a></li>
 					<li><a href="/logout">Đăng xuất</a></li>
@@ -86,7 +86,7 @@
                         			Chào, <span class="font-weight-bold" th:text="${session.currentUser.fullname}"></span>
                         		</a>
                         		<ul class="sub__menu">
-									<li><a href="/cart">Giỏ hàng<span class="shopping__cart__quantity" th:text="|(${session.currentCart.totalQuantity})|"></span></a></li>
+									<li><a href="/cart">Giỏ hàng<span class="shopping__cart__quantity headerTotalQuantity" th:text="|${session.currentCart.totalQuantity}|"></span></a></li>
 									<li><a th:href="@{'/profile/' + ${session.currentUser.username}}">Hồ sơ</a></li>
 									<li><a th:href="@{'/security/' + ${session.currentUser.username}}">Bảo mật</a></li>
 									<li><a href="/logout">Đăng xuất</a></li>
@@ -117,11 +117,11 @@
             </div>
             <div class="col-lg-3 d-flex align-items-center justify-content-center">
                 <div class="header__cart">
-                    <div class="header__cart__price modified__cart">
+                    <div class="header__cart__price modified__cart" style="cursor: pointer;" onclick="window.location='/cart';">
                     	Giỏ hàng: <span class="headerTotalPrice" th:text="${#numbers.formatDecimal(session.currentCart.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span>
-                    	<a href="cart">
+                    	<a>
                     		<i class="fa fa-shopping-bag"></i> 
-                    		<span th:text="${session.currentCart.totalQuantity}"></span>
+                    		<span class="headerTotalQuantity" th:text="${session.currentCart.totalQuantity}"></span>
                     	</a>
                     </div>
                 </div>

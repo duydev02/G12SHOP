@@ -20,6 +20,6 @@ public class CartDetailDto implements Serializable {
 	private Integer quantity;
 	private String name;
 	private String slug;
-	private String imgUrl;
+	private String imgName;
 	
 }

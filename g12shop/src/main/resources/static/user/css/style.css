@@ -2067,8 +2067,13 @@ ol {
 	margin-bottom: 18px;
 }
 
+.shoping__checkout ul li:first-child {
+	border-bottom: none;
+}
+
 .shoping__checkout ul li:last-child {
 	padding-bottom: 0;
+	border-bottom: 1px solid #ebebeb;
 	border-bottom: none;
 	margin-bottom: 0;
 }
@@ -3054,12 +3059,12 @@ ol {
 	}
 	.humberger__menu__cart ul {
 		display: inline-block;
-		margin-right: 25px;
+		margin-right: 12px;
 	}
 	.humberger__menu__cart ul li {
 		list-style: none;
 		display: inline-block;
-		margin-right: 15px;
+		margin-right: 20px;
 	}
 	.humberger__menu__cart ul li:last-child {
 		margin-right: 0;

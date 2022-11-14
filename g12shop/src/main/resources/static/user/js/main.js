@@ -256,9 +256,9 @@ function isSearchedPage(pageNumber) {
 }
 
 // Ngan event click icon cua sp thi chuyen den trang chi tiet sp
-$(".product__item__pic__hover li a").click(function(event) {
+$(".product__item__pic__hover li a, .featured__item__pic__hover li a").click(function(event) {
 	event.stopPropagation();
-})
+});
 
 // Them san pham voi so luong 1 vao gio hang
 function addToCart(productId) {
@@ -269,8 +269,9 @@ function addToCart(productId) {
 		dataType: 'json',
 		success: function (data) {
 			$('.headerTotalPrice').text(numberWithDot(data.totalPrice));
+			$('.headerTotalQuantity').text(data.totalQuantity);
 		},
-		error: function (data) {
+		error: function () {
 			alert('Không thể thêm sản phẩm vào giỏ hàng, hãy thử lại!');
 		}
 	})

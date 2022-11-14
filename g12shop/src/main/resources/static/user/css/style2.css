@@ -156,11 +156,15 @@
     right: 0;
 }
 
-.modified__cart a:hover i {
-	color: #20097c;
+.modified__cart:hover span {
+	color: #7fad39;
 }
 
-.modified__cart a:hover span {
+.modified__cart:hover a span {
+	color: #1c1c1c;
+}
+
+.modified__cart:hover a span {
 	top: -2px;
 	right: -2px;
 }
@@ -269,7 +273,7 @@
 
 .user__profile .shopping__cart__quantity {
 	color: #7fad39;
-	margin-left: 4px;
+	margin-left: 8px;
 }
 
 .humberger__menu__widget .user__profile .sub__menu {

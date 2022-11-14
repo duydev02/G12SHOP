@@ -16,19 +16,19 @@ public class CartServiceImpl implements CartService {
 
 	@Autowired
 	private ProductsService productsService;
-	
+
 	@Override
 	public CartDto updateCart(CartDto cart, Long productId, Integer quantity, boolean isReplace) {
 		Products product = productsService.findById(productId);
-		
+
 		HashMap<Long, CartDetailDto> details = cart.getDetails();
-		
+
 		// 1 - them moi sp
 		// 2 - update:
-		//		2.1 - cong don
-		//		2.2 - replace
+		// 2.1 - cong don
+		// 2.2 - replace
 		// 3 - delete: update quantity ve 0
-		
+
 		if (!details.containsKey(productId)) {
 			// them moi
 			CartDetailDto newDetail = createNewCartDetail(product, quantity);
@@ -68,16 +68,19 @@ public class CartServiceImpl implements CartService {
 		Double totalPrice = 0D;
 		HashMap<Long, CartDetailDto> details = cart.getDetails();
 		for (CartDetailDto cartDetail : details.values()) {
-			Integer discount = cartDetail.getDiscount();
-			Double percentDiscount = 1D;
-			if (discount != null && discount > 0) {
-				percentDiscount = (double) (1 - discount / 100);
+
+			Double percentDiscount = 1.0;
+			if (cartDetail.getDiscount() != null) {
+				Double discount = (double) cartDetail.getDiscount();
+				if (discount > 0) {
+					percentDiscount = 1.0 - discount / 100;
+				}
 			}
 			totalPrice += cartDetail.getPrice() * percentDiscount * cartDetail.getQuantity();
 		}
 		return totalPrice;
 	}
-	
+
 	private CartDetailDto createNewCartDetail(Products product, Integer quantity) {
 		CartDetailDto cartDetail = new CartDetailDto();
 		cartDetail.setProductId(product.getId());
@@ -86,7 +89,7 @@ public class CartServiceImpl implements CartService {
 		cartDetail.setQuantity(quantity);
 		cartDetail.setSlug(product.getSlug());
 		cartDetail.setName(product.getName());
-		cartDetail.setImgUrl(product.getImgName());
+		cartDetail.setImgName(product.getImgName());
 		return cartDetail;
 	}
 
