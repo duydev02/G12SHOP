@@ -2022,9 +2022,10 @@ ol {
 	border: 1px solid #cccccc;
 	font-size: 16px;
 	color: #b2b2b2;
-	text-align: center;
+	text-align: left;
 	display: inline-block;
 	margin-right: 15px;
+	padding-left: 10px;
 }
 
 .shoping__discount form input::placeholder {
