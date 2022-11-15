@@ -33,7 +33,7 @@
                             <tbody>
                                 <tr th:each="detail : ${session.currentCart.details}">
                                     <td class="shoping__cart__item" th:attr="onclick=|location.href='/shop-details/${detail.value.slug}'|" style="cursor: pointer;">
-                                        <img th:src="|/user/img/product/${detail.value.slug}/${detail.value.imgName}|" alt=""
+                                        <img th:src="|/user/img/product/${detail.key}/${detail.value.imgName}|" alt=""
                                         	style="width: 80px;">
                                         <h5 th:text="${detail.value.name}"></h5>
                                         <div th:text="${detail.value.discount > 0 ? '- Giảm ' + detail.value.discount + '% -' : ''}"

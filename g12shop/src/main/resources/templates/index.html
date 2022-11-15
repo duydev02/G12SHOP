@@ -21,7 +21,7 @@
 			<div class="row" >
 				<div class="categories__slider owl-carousel">
 					<div class="col-lg-3" th:each="category : ${categories}">
-						<div class="categories__item set-bg" th:data-setbg="|/user/img/categories/${category.slug}.png|">
+						<div class="categories__item set-bg" th:data-setbg="|/user/img/categories/${category.id}.png|">
 							<h5>
 								<a th:href="|/shop-grid/${category.slug}|" th:text="|${category.name}|"> th:text=${category.name}></a>
 							</h5>
@@ -55,7 +55,7 @@
 				<div th:class="@{'col-lg-3 col-md-4 col-sm-6 mix all ' + ${product.productType.slug}}" th:each="product : ${products}">
 					<div class="featured__item">
 						<div style="cursor: pointer;" th:attr="onclick=|window.location.href='/shop-details/${product.slug}'|" class="featured__item__pic set-bg"
-							th:data-setbg="|/user/img/product/${product.slug}/${product.imgName}|">
+							th:data-setbg="|/user/img/product/${product.id}/${product.imgName}|">
 							<div class="product__discount__percent" th:if="${product.discount > 0}" th:text="|-${product.discount}%|"></div>
 							<ul class="featured__item__pic__hover">
 								<li><a href="#"><i class="fa fa-heart"></i></a></li>
