@@ -38,11 +38,13 @@
                         <div class="product__details__quantity">
                             <div class="quantity">
                                 <div class="pro-qty">
-                                    <input type="text" value="1">
+                                	<span class="dec qtybtn" th:attr="onclick=|decQtybtnShopdetail()|">-</span>
+                                    <input id="shop-detail-quantity" type="text" value="1" min="1" th:max="${product.quantity}">
+                                    <span class="inc qtybtn" th:attr="onclick=|incQtybtnShopdetail('${product.quantity}')|">+</span>
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="primary-btn">THÊM VÀO GIỎ HÀNG</a>
+                        <a class="primary-btn" th:attr="onclick=|addToCartByProducts('${product.id}')|" style="cursor: pointer;">THÊM VÀO GIỎ HÀNG</a>
                         <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
                         <ul>
                             <li><b>Mô tả</b> <span class="d-block mb-4" th:text="${product.description}"></span></li>

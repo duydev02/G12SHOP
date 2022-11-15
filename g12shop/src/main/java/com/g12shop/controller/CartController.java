@@ -31,6 +31,7 @@ public class CartController {
 			HttpSession session) {
 		CartDto currentCart = SessionUtil.getCurrentCart(session);
 		cartService.updateCart(currentCart, productId, quantity, isReplace);
-		return "cart::";
+		return "cart::#viewCartFragment";
 	}
+	
 }

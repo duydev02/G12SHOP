@@ -30,4 +30,10 @@ public class CartApi {
 		cartService.updateCart(currentCart, productId, quantity, isReplace);
 		return ResponseEntity.ok(currentCart);
 	}
+	
+	@GetMapping("/refresh")
+	public ResponseEntity<?> doGetRefresh(HttpSession session) {
+		CartDto currentCart = SessionUtil.getCurrentCart(session);
+		return ResponseEntity.ok(currentCart);
+	}
 }

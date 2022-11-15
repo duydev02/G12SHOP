@@ -202,7 +202,7 @@
     /*-------------------
 		Quantity change
 	--------------------- */
-    var proQty = $('.pro-qty');
+    /*var proQty = $('.pro-qty');
     proQty.prepend('<span class="dec qtybtn">-</span>');
     proQty.append('<span class="inc qtybtn">+</span>');
     proQty.on('click', '.qtybtn', function () {
@@ -219,7 +219,7 @@
             }
         }
         $button.parent().find('input').val(newVal);
-    });
+    });*/
 
 })(jQuery);
 
@@ -277,6 +277,100 @@ function addToCart(productId) {
 	})
 }
 
+// Xoa san pham khoi gio hang
+function removeProduct(productId) {
+	var url = '/cart/update?productId=' + productId + '&quantity=0&isReplace=true';
+	// bien isReplace khong co y nghia gi khi thuc hien hanh dong DELETE product
+	$.get(url).done(function (data) {
+		$('#viewCartFragment').replaceWith(data);
+		callApiRefreshCart();
+	});
+}
+
+// Cap nhat so luong san pham trong gio hang
+function updateProduct(productId) {
+	var idInput = '#quantity' + productId;
+	var newQuantity = $(idInput).val();
+	var url = '/cart/update?productId=' + productId + '&quantity=' + newQuantity +'&isReplace=true';
+	$.get(url).done(function (data) {
+		$('#viewCartFragment').replaceWith(data)
+		callApiRefreshCart();
+	});
+}
+   
+function decQtybtn (productId) {
+	var idInput = '#quantity' + productId;
+	$(idInput).val($(idInput).val() - 1);
+	var newQuantity = $(idInput).val();
+	var url = '/cart/update?productId=' + productId + '&quantity=' + newQuantity +'&isReplace=true';
+	$.get(url).done(function (data) {
+		$('#viewCartFragment').replaceWith(data)
+		callApiRefreshCart();
+	});
+}
+   
+function incQtybtn (productId) {
+	var idInput = '#quantity' + productId;
+	$(idInput).val($(idInput).val() - (-1));
+	var newQuantity = $(idInput).val();
+	var url = '/cart/update?productId=' + productId + '&quantity=' + newQuantity +'&isReplace=true';
+	$.get(url).done(function (data) {
+		$('#viewCartFragment').replaceWith(data)
+		callApiRefreshCart();
+	});
+}
+
+function decQtybtnShopdetail() {
+	var idInput = '#shop-detail-quantity';
+	var quantity = $(idInput).val();
+	if (quantity > 1) {
+		$(idInput).val(quantity - 1);
+	}
+}
+
+function incQtybtnShopdetail(maxQuantity) {
+	var idInput = '#shop-detail-quantity';
+	var quantity = $(idInput).val();
+	if (quantity < parseInt(maxQuantity)) {
+		$(idInput).val(quantity - (-1));
+	}
+}
+
+function addToCartByProducts(productId) {
+	var idInput = '#shop-detail-quantity';
+	var quantity = $(idInput).val();
+	var endpoint = '/api/cart/update?productId=' + productId + '&quantity=' + quantity + '&isReplace=false';
+	$.ajax({
+		url: endpoint,
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			$(idInput).val(1);
+			$('.headerTotalPrice').text(numberWithDot(data.totalPrice));
+			$('.headerTotalQuantity').text(data.totalQuantity);
+		},
+		error: function () {
+			alert('Không thể thêm sản phẩm vào giỏ hàng, hãy thử lại!');
+		}
+	})
+}
+
+function callApiRefreshCart() {
+	$.ajax({
+		url: '/api/cart/refresh',
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			$('.headerTotalPrice').text(numberWithDot(data.totalPrice));
+			$('.headerTotalQuantity').text(data.totalQuantity);
+		},
+		error: function () {
+			
+		}
+	})
+}
+
+// Format currency data
 function numberWithDot(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' đ';
 }
