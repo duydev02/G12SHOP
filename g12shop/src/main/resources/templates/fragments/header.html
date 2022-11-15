@@ -11,10 +11,10 @@
     </div>
     <div class="humberger__menu__cart">
         <ul>
-            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
+            <li th:if="${session.currentUser != null}"><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
             <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span class="headerTotalQuantity" th:text="${session.currentCart.totalQuantity}"></span></a></li>
         </ul>
-        <div class="header__cart__price">item: <span class="headerTotalPrice" th:text="${#numbers.formatDecimal(session.currentCart.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span></div>
+        <div class="header__cart__price">Giỏ hàng: <span class="headerTotalPrice" th:text="${#numbers.formatDecimal(session.currentCart.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span></div>
     </div>
     <div class="humberger__menu__widget">
         <div class="header__top__right__auth d-flex flex-column">
