@@ -19,6 +19,7 @@ public class CartDto implements Serializable {
 	private String phone;
 	private Double totalPrice = 0D;
 	private Integer totalQuantity = 0;
+	private Double shippingFee;
 	private HashMap<Long, CartDetailDto> details = new HashMap<>();
 	
 }

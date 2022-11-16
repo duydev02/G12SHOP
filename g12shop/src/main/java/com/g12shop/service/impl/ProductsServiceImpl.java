@@ -90,4 +90,9 @@ public class ProductsServiceImpl implements ProductsService {
 		}
 	}
 
+	@Override
+	public void updateQuantity(Integer newQuantity, Long productId) {
+		repo.updateQuantity(newQuantity, productId);
+	}
+
 }

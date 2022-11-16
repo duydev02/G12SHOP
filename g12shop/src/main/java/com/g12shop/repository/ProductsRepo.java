@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -48,4 +49,7 @@ public interface ProductsRepo extends JpaRepository<Products, Long> {
 	@Query(value = "SELECT * FROM products WHERE name LIKE %:key%", nativeQuery = true)
 	Page<Products> findByKeywords(String key, PageRequest of);
 
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE products SET quantity = ? WHERE id = ?", nativeQuery = true)
+	void updateQuantity(Integer newQuantity, Long productId);
 }

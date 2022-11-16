@@ -36,9 +36,6 @@ public class OrderDetails implements Serializable {
 	@Column(name = "quantity")
 	private Integer quantity;
 	
-	@Column(name = "statusOrder")
-	private StatusOrders statusOrder;
-	
 	@ManyToOne
 	@JoinColumn(name = "orderId", referencedColumnName = "id")
 	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})

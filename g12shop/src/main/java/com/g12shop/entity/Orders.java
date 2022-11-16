@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -31,20 +33,27 @@ public class Orders implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@ManyToOne
+	@JoinColumn(name = "accountId", referencedColumnName = "id")
+	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+	private Accounts account;
+	
 	@Column(name = "address")
 	private String address;
 	
 	@Column(name = "phone")
 	private String phone;
 	
+	@Column(name = "shippingFee")
+	private Double shippingFee;
+	
+	@Column(name = "totalPrice")
+	private Double totalPrice;
+	
 	@Column(name = "createdDate")
+	@CreationTimestamp
 	private Timestamp createdDate;
 	
-	@Column(name = "statusOrder")
-	private StatusOrders statusOrder;
-	
-	@ManyToOne
-	@JoinColumn(name = "accountId", referencedColumnName = "id")
-	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-	private Accounts account;
+	@Column(name = "orderStatus")
+	private OrderStatuses orderStatus;
 }

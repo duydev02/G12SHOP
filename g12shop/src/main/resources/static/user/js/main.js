@@ -374,3 +374,54 @@ function callApiRefreshCart() {
 function numberWithDot(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' đ';
 }
+
+function checkout() {
+	var phone = $('#phone').val();
+	var address = $('#address').val();
+	var check = true;
+	if (phone == null || phone == "") {
+		$('#error-phone').text("Không được để trống");
+		check = false;
+	} else {
+		$('#error-phone').text("");
+	}
+	if (address == null || address == "") {
+		$('#error-address').text("Không được để trống");
+		check = false;
+	} else {
+		$('#error-address').text("");
+	}
+	
+	if (check) {
+		var endpoint = '/api/cart/checkout?address=' + address + '&phone=' + phone;
+	
+		$.ajax({
+			url: endpoint,
+			type: 'GET',
+			statusCode: {
+				200: handle200,
+				400: handle400,
+				401: handle401,
+				412: handle412
+			}
+		});
+	}
+}
+
+function handle200() {
+	alert('Thanh toán của bạn được tạo thành công');
+	window.location.href = '/index';
+}
+
+function handle400() {
+	alert('Thanh toán lỗi, hãy thử lại')
+}
+
+function handle401() {
+	alert('Hãy đăng nhập trước khi thanh toán');
+	window.location.href = '/login';
+}
+
+function handle412() {
+	alert('Số lượng sản phẩm muốn mua phải nhỏ hơn số lượng có trong kho');
+}
