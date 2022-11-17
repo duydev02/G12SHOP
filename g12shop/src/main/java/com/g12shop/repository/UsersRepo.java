@@ -28,4 +28,12 @@ public interface UsersRepo extends JpaRepository<Users, Long> {
 	@Modifying(clearAutomatically = true)
 	@Query(value = "UPDATE users SET isDeleted = 1 WHERE username = ?", nativeQuery = true)
 	void deleteLogical(String username);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE users SET email = ?1, hashPassword = ?2, fullname = ?3, imgUrl = ?4 WHERE username = ?5", nativeQuery = true)
+	void update(String email, String hashPassword, String fullname, String imgUrl, String username);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE users SET email = ?1, fullname = ?2, imgUrl = ?3 WHERE username = ?4", nativeQuery = true)
+	void updateNonPass(String email, String fullname, String imgUrl, String username);
 }

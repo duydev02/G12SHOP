@@ -19,8 +19,18 @@ public interface UsersService {
 	
 	//Register
 	Users doRegister(Users user) throws UserNotFoundExcepion;
+
+	void save(Users user) throws UserNotFoundExcepion;
+	
+	void save(Users user, String siteURL) throws UserNotFoundExcepion, Exception;
+
+	void update(Users user) throws UserNotFoundExcepion;
+
+	void update(Users user, String siteURL) throws UserNotFoundExcepion, Exception;
+	
 	//Send mail verification
 	void sendVerificationEmail(Users user, String siteURL) throws Exception;
+	
 	//verification
 	Boolean verificationUser(String verificationCode);
 	
@@ -29,10 +39,13 @@ public interface UsersService {
 	
 	//take token
 	Users getResetPasswordToken(String token);
+	
 	//forgot-password
 	void forgotPassword(String token, String email) throws UserNotFoundExcepion ;
+	
 	//send mail confirm user
 	void sendMailActivated(String email, String linkResetPassword)throws UnsupportedEncodingException, MessagingException;
+	
 	//Change Pasword
 	void updatePassword(Users user, String newPassword);
 

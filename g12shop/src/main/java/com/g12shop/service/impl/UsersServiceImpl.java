@@ -7,17 +7,19 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.g12shop.config.EncoderConfig;
-import com.g12shop.entity.Users;
 import com.g12shop.entity.Roles;
+import com.g12shop.entity.Users;
 import com.g12shop.repository.UsersRepo;
-import com.g12shop.service.UsersService;
 import com.g12shop.service.RolesService;
+import com.g12shop.service.UsersService;
 import com.g12shop.util.UserNotFoundExcepion;
 
 import net.bytebuddy.utility.RandomString;
@@ -49,6 +51,56 @@ public class UsersServiceImpl implements UsersService {
 	}
 
 	@Override
+	public void save(Users user) throws UserNotFoundExcepion {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void save(Users user, String siteURL) throws Exception {
+		if (existsUsername(user.getUsername())) {
+			throw new UserNotFoundExcepion("User already exists!");
+		} else if (existsEmail(user.getEmail())) {
+			throw new UserNotFoundExcepion("Email already exists!");
+		}
+		Roles role = rolesService.findByName("user");
+		user.setRole(role);
+		user.setIsDeleted(Boolean.FALSE);
+		String hashPassword = encoderConfig.passwordEncoder().encode(user.getHashPassword());
+		user.setHashPassword(hashPassword);
+		String randomCode = RandomString.make(64);
+		user.setVerificationCode(randomCode);
+		Users userSaved = repo.saveAndFlush(user);
+		sendVerificationEmail(userSaved, siteURL);
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void update(Users user) throws UserNotFoundExcepion {
+		if (ObjectUtils.isNotEmpty(user) && StringUtils.isEmpty(user.getHashPassword())) {
+			repo.updateNonPass(user.getEmail(), user.getFullname(), user.getImgUrl(), user.getUsername());
+		} else {
+			String hashPassword = encoderConfig.passwordEncoder().encode(user.getHashPassword());
+			user.setHashPassword(hashPassword);
+			repo.update(user.getEmail(), hashPassword, user.getFullname(), user.getImgUrl(), user.getUsername());
+		}
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void update(Users user, String siteURL) throws UserNotFoundExcepion, Exception {
+		if (ObjectUtils.isNotEmpty(user) && StringUtils.isEmpty(user.getHashPassword())) {
+			repo.updateNonPass(user.getEmail(), user.getFullname(), user.getImgUrl(), user.getUsername());
+		} else {
+			String hashPassword = encoderConfig.passwordEncoder().encode(user.getHashPassword());
+			user.setHashPassword(hashPassword);
+			repo.update(user.getEmail(), hashPassword, user.getFullname(), user.getImgUrl(), user.getUsername());
+			sendVerificationEmail(user, siteURL);
+		}
+	}
+
+	@Override
 	public Users doLogin(String usernameOrEmail, String password) throws UserNotFoundExcepion {
 		Users userResponse = repo.findByUsernameOrEmailAndIsEnabledAndIsDeleted(usernameOrEmail, usernameOrEmail,
 				Boolean.TRUE, Boolean.FALSE);
@@ -60,8 +112,7 @@ public class UsersServiceImpl implements UsersService {
 		} else if (userResponse.getIsDeleted() == true) {
 			throw new UserNotFoundExcepion("User has been deleted");
 		} else {
-			Boolean checkPassword = encoderConfig.passwordEncoder().matches(password,
-					userResponse.getHashPassword());
+			Boolean checkPassword = encoderConfig.passwordEncoder().matches(password, userResponse.getHashPassword());
 			return checkPassword ? userResponse : null;
 		}
 	}
@@ -69,7 +120,7 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public Users doRegister(Users user) throws UserNotFoundExcepion {
 		if (existsUsername(user.getUsername())) {
-			throw new UserNotFoundExcepion("User already exists!");
+			throw new UserNotFoundExcepion("Username already exists!");
 		} else if (existsEmail(user.getEmail())) {
 			throw new UserNotFoundExcepion("Email already exists!");
 		} else {
@@ -128,7 +179,7 @@ public class UsersServiceImpl implements UsersService {
 		user.setHashPassword(hashPassword);
 		repo.saveAndFlush(user);
 	}
-	
+
 	@Override
 	public Users getResetPasswordToken(String token) {
 		// TODO Auto-generated method stub
@@ -138,14 +189,14 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public void forgotPassword(String token, String email) throws UserNotFoundExcepion {
 		Users user = repo.findByEmail(email);
-		
-		if(user == null) {
-			throw new UserNotFoundExcepion("Could not find any customer with email " + email); 
-		}else if(!user.getIsEnabled()) {
-			throw new UserNotFoundExcepion("Account not activated"); 
-		}else if(user.getIsDeleted()) {
-			throw new UserNotFoundExcepion("Account has been deleted"); 
-		}else {
+
+		if (user == null) {
+			throw new UserNotFoundExcepion("Could not find any customer with email " + email);
+		} else if (!user.getIsEnabled()) {
+			throw new UserNotFoundExcepion("Account not activated");
+		} else if (user.getIsDeleted()) {
+			throw new UserNotFoundExcepion("Account has been deleted");
+		} else {
 			user.setResetPasswordToken(token);
 			repo.saveAndFlush(user);
 		}
@@ -154,7 +205,7 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public void updatePassword(Users user, String newPassword) {
 		String hashPassword = encoderConfig.passwordEncoder().encode(newPassword);
-		
+
 		user.setHashPassword(hashPassword);
 		user.setResetPasswordToken(null);
 		repo.saveAndFlush(user);
@@ -165,24 +216,22 @@ public class UsersServiceImpl implements UsersService {
 			throws UnsupportedEncodingException, MessagingException {
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
-		
+
 		helper.setFrom("contact@G12SHOP.com", "G12SHOP SUPPORT");
 		helper.setTo(email);
-		
+
 		String subject = "Here the link to reset your password";
-		
+
 		String content = "<p>Hello,</p>" + "<p>You have requested to reset your password.</p>"
-				+ "<p>Click the link below to change your password: </p>" 
-				+ "<h1><a href=\"" + linkResetPassword + "\">Change My Password</a></h1>" + "<br>" 
-				+ "<p> Ignore this email if you do remember your password, "
+				+ "<p>Click the link below to change your password: </p>" + "<h1><a href=\"" + linkResetPassword
+				+ "\">Change My Password</a></h1>" + "<br>" + "<p> Ignore this email if you do remember your password, "
 				+ " or you have not made the request. </p>";
-		
-		
+
 		helper.setSubject(subject);
 		helper.setText(content, true);
 		mailSender.send(message);
 	}
-	
+
 	private Boolean existsUsername(String username) {
 		return repo.findByUsername(username) != null ? true : false;
 	}
