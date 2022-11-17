@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -22,53 +23,61 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "accounts")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Accounts implements Serializable {
+public class Users implements Serializable {
 
 	private static final long serialVersionUID = -8379333422254368439L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "username")
 	private String username;
-	
+
 	@Column(name = "fullname")
 	private String fullname;
-	
+
 	@Column(name = "hashPassword")
 	private String hashPassword;
-	
+
 	@Column(name = "email")
 	private String email;
-	
+
 	@Column(name = "isEnabled")
 	private Boolean isEnabled;
-	
+
 	@Column(name = "authProvider")
 	private String authProvider;
-	
+
 	@Column(name = "resetPasswordToken")
 	private String resetPasswordToken;
-	
+
 	@Column(name = "verificationCode")
 	private String verificationCode;
-	
+
 	@Column(name = "createdDate")
 	@CreationTimestamp
 	private Timestamp createdDate;
-	
+
 	@Column(name = "imgUrl")
 	private String imgUrl;
-	
+
 	@Column(name = "isDeleted")
 	private Boolean isDeleted;
 
 	@ManyToOne
-	@JoinColumn(name = "roleId", referencedColumnName = "id" )
-	@JsonIgnoreProperties(value = {"application","hibernateLazyInitializer"})
-	private Roles roles;
+	@JoinColumn(name = "roleId", referencedColumnName = "id")
+	@JsonIgnoreProperties(value = { "application", "hibernateLazyInitializer" })
+	private Roles role;
+
+	@Transient
+	public String getAvatarImagePath() {
+		if (imgUrl == null) {
+			return "/user-avatar/default.png";
+		}
+		return "/user-avatar/" + imgUrl;
+	}
 }

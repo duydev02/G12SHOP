@@ -94,9 +94,9 @@
 	                                        <h3 th:text="${#lists.size(productReviews) > 0 ? #lists.size(productReviews) : 'Chưa có'} + ' đánh giá'"></h3>                                     
 	                                        <div class="media" th:if=${productReviews} th:each="productReview : ${productReviews}">
 	                                            <a class="pull-left" href="#"><img class="media-object"
-	                                            	th:src="|/user/img/user/${productReview.account.imgUrl == null || productReview.account.imgUrl == '' ? 'default.png' : productReview.account.imgUrl}|" alt="Avatar"></a>
+	                                            	th:src="|/user/img/user/${productReview.user.imgUrl == null || productReview.user.imgUrl == '' ? 'default.png' : productReview.user.imgUrl}|" alt="Avatar"></a>
 	                                            <div class="media-body">
-	                                                <h4 class="media-heading" th:text="${productReview.account.fullname}"></h4>
+	                                                <h4 class="media-heading" th:text="${productReview.user.fullname}"></h4>
 	                                                <p th:text="${productReview.description}"></p>
 	                                                <ul class="list-unstyled list-inline media-detail pull-left">
 	                                                    <li><i class="fa fa-calendar"></i><span th:text="${#dates.format(productReview.createdDate, 'dd-MMM-yyyy HH:mm')}"></span></li>

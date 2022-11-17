@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.g12shop.dto.CartDetailDto;
 import com.g12shop.dto.CartDto;
-import com.g12shop.entity.Accounts;
+import com.g12shop.entity.Users;
 import com.g12shop.entity.OrderStatuses;
 import com.g12shop.entity.Orders;
 import com.g12shop.entity.Products;
@@ -102,10 +102,10 @@ public class CartServiceImpl implements CartService {
 
 	@Transactional
 	@Override
-	public void insert(CartDto cart, Accounts account, String address, String phone) throws Exception {
+	public void insert(CartDto cart, Users user, String address, String phone) throws Exception {
 		// insert vao ORDER
 		Orders order = new Orders();
-		order.setAccount(account);
+		order.setUser(user);
 		order.setAddress(address);
 		order.setPhone(phone);
 		order.setShippingFee(cart.getShippingFee());

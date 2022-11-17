@@ -36,9 +36,9 @@ public class Orders implements Serializable {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "accountId", referencedColumnName = "id")
+	@JoinColumn(name = "userId", referencedColumnName = "id")
 	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-	private Accounts account;
+	private Users user;
 	
 	@Column(name = "address")
 	private String address;

@@ -15,8 +15,8 @@ public interface ProductReviewsService {
 
 	List<ProductReviews> findAllByProductId(Long id);
 
-	void createReview(Long productId, Long accountId, String message);
+	void createReview(Long productId, Long userId, String message);
 
-	ProductReviews findTopByAccountIdOrderByCreatedDateDesc(Long accountId);
+	ProductReviews findTopByUserIdOrderByCreatedDateDesc(Long userId);
 
 }

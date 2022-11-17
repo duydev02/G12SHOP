@@ -21,31 +21,31 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.g12shop.config.EncoderConfig;
 import com.g12shop.constant.SessionConstant;
-import com.g12shop.entity.Accounts;
-import com.g12shop.service.AccountsService;
+import com.g12shop.entity.Users;
+import com.g12shop.service.UsersService;
 import com.g12shop.util.SessionUtil;
 import com.g12shop.util.UserNotFoundExcepion;
 
 import net.bytebuddy.utility.RandomString;
 
 @Controller
-public class AccountController {
+public class UserController {
 
 	@Autowired
-	private AccountsService accountsService;
+	private UsersService usersService;
 
 	@Autowired
 	private EncoderConfig encoderConfig;
 
 	@GetMapping("/login")
 	public String doGetLogin(Model model) {
-		model.addAttribute("accountRequest", new Accounts());
+		model.addAttribute("userRequest", new Users());
 		return "login";
 	}
 
 	@GetMapping("/register")
 	public String doGetRegister(Model model) {
-		model.addAttribute("accountRequest", new Accounts());
+		model.addAttribute("userRequest", new Users());
 		return "register";
 	}
 
@@ -61,8 +61,8 @@ public class AccountController {
 	}
 
 	@GetMapping("/verify")
-	public String verifyAccount(@Param("verificationCode") String verificationCode, RedirectAttributes ra) {
-		if (accountsService.verificationAccount(verificationCode)) {
+	public String verifyUser(@Param("verificationCode") String verificationCode, RedirectAttributes ra) {
+		if (usersService.verificationUser(verificationCode)) {
 			ra.addFlashAttribute("message", "Your account is activated, please login again!");
 			return "redirect:/login";
 		} else {
@@ -73,9 +73,9 @@ public class AccountController {
 	
 	@GetMapping("/reset-password")
 	public String doGetResetPassword(@Param("token")String token, RedirectAttributes ra, Model model) {
-		Accounts account = accountsService.getResetPasswordToken(token);
+		Users user = usersService.getResetPasswordToken(token);
 		
-		if(account == null || token == null) {
+		if(user == null || token == null) {
 			ra.addFlashAttribute("message", "the token has expired, try again!");
 			return "redirect:/forgot-password";
 		}else {
@@ -86,35 +86,35 @@ public class AccountController {
 
 	@GetMapping("/profile/{username}")
 	public String doGetProfile(@PathVariable("username") String username, HttpSession session, Model model) {
-		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
-		if (!username.equals(account.getUsername())) {
+		Users user = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
+		if (!username.equals(user.getUsername())) {
 			return "redirect:/index";
 		}
-		model.addAttribute("userRequest", account);
+		model.addAttribute("userRequest", user);
 		return "profile";
 	}
 
 	@GetMapping("/security/{username}")
 	public String doGetSecurity(@PathVariable("username") String username, HttpSession session) {
-		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
-		if (!username.equals(account.getUsername())) {
+		Users user = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
+		if (!username.equals(user.getUsername())) {
 			return "redirect:/index";
 		}
 		return "security";
 	}
 
 	@PostMapping("/login")
-	public String doPostLogin(@Valid @ModelAttribute("accountRequest") Accounts accountRequest, BindingResult result,
+	public String doPostLogin(@Valid @ModelAttribute("userRequest") Users userRequest, BindingResult result,
 			RedirectAttributes ra, HttpSession session) throws Exception {
 		if (result.hasErrors()) {
 			result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
 			ra.addFlashAttribute("message", "Error, try again!");
 		}
 		try {
-			Accounts accountResponse = accountsService.doLogin(accountRequest.getUsername(),
-					accountRequest.getHashPassword());
-			if (accountResponse != null) {
-				session.setAttribute(SessionConstant.CURRENT_USER, accountResponse);
+			Users userResponse = usersService.doLogin(userRequest.getUsername(),
+					userRequest.getHashPassword());
+			if (userResponse != null) {
+				session.setAttribute(SessionConstant.CURRENT_USER, userResponse);
 				return "redirect:/index";
 			} else {
 				ra.addFlashAttribute("message", "Mật khẩu không chính xác");
@@ -127,16 +127,16 @@ public class AccountController {
 	}
 
 	@PostMapping("/register")
-	public String doPostRegister(@Valid @ModelAttribute("accountRequest") Accounts accountRequest, BindingResult result,
+	public String doPostRegister(@Valid @ModelAttribute("userRequest") Users userRequest, BindingResult result,
 			RedirectAttributes ra, HttpServletRequest request) throws Exception {
 		if (result.hasErrors()) {
 			result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
 			ra.addFlashAttribute("message", "Error, try again!");
 		}
 		try {
-			Accounts account = accountsService.doRegister(accountRequest);
+			Users user = usersService.doRegister(userRequest);
 			String siteURL = SessionUtil.getSiteURL(request);
-			accountsService.sendVerificationEmail(account, siteURL);
+			usersService.sendVerificationEmail(user, siteURL);
 			ra.addFlashAttribute("message",
 					"Successfully registration, please go to your email and verify to activate your account!");
 			return "redirect:/register";
@@ -149,19 +149,19 @@ public class AccountController {
 	@PostMapping("/change-password")
 	public String doPostChangePassword(@RequestParam("currentPassword") String currentPassword,
 			@RequestParam("newPassword") String newPassword, RedirectAttributes ra, HttpSession session) {
-		Accounts account = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
+		Users user = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
 
-		if (account == null) {
+		if (user == null) {
 			ra.addFlashAttribute("message", "Please Login!");
 			return "redirect:/login";
 		} else if (currentPassword.equals(newPassword)) {
 			ra.addFlashAttribute("message", "Your new pasword must be different than the current one, try again!");
-			return "redirect:/security/" + account.getUsername();
-		} else if (!encoderConfig.passwordEncoder().matches(currentPassword, account.getHashPassword())) {
+			return "redirect:/security/" + user.getUsername();
+		} else if (!encoderConfig.passwordEncoder().matches(currentPassword, user.getHashPassword())) {
 			ra.addFlashAttribute("message", "Your current password is incorrect!");
-			return "redirect:/security/" + account.getUsername();
+			return "redirect:/security/" + user.getUsername();
 		} else {
-			accountsService.changePassword(account, newPassword);
+			usersService.changePassword(user, newPassword);
 			session.removeAttribute(SessionConstant.CURRENT_USER);
 			ra.addFlashAttribute("message", "Your password has been changed successfully!");
 			return "redirect:/login";
@@ -173,10 +173,10 @@ public class AccountController {
 		String token = RandomString.make(30);
 		
 		try {
-			accountsService.forgotPassword(token, email);
+			usersService.forgotPassword(token, email);
 			
 			String linkPasswordReset = SessionUtil.getSiteURL(request) + "/reset-password?token=" + token;
-			accountsService.sendMailActivated(email, linkPasswordReset);
+			usersService.sendMailActivated(email, linkPasswordReset);
 			ra.addFlashAttribute("message", "we have send a reset password link to your email, please check.");
 		} catch (UserNotFoundExcepion e) {
 			ra.addFlashAttribute("message", e.getMessage());
@@ -189,13 +189,13 @@ public class AccountController {
 	@PostMapping("/reset-password")
 	public String doPostResetPassword(@RequestParam("token")String token, @RequestParam("password")String password, 
 			HttpServletRequest request, RedirectAttributes ra)throws Exception{
-		Accounts account = accountsService.getResetPasswordToken(token);
+		Users user = usersService.getResetPasswordToken(token);
 		
-		if(account == null) {
+		if(user == null) {
 			ra.addFlashAttribute("message", "Invalid Token");
 			return "redirect:/forgot-password";
 		}else {
-			accountsService.updatePassword(account, password);
+			usersService.updatePassword(user, password);
 			ra.addFlashAttribute("message", "You have successfully changed your password, please login");
 			return "redirect:/login";
 		}

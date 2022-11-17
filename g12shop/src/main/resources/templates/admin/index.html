@@ -68,13 +68,29 @@
                 <div class="container-fluid">
                     <!-- Small boxes (Stat box) -->
                     <div class="row">
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3 th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></h3>
+
+                                    <p>Doanh thu trong tháng</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Thông tin thêm <i
+                                        class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
                         <div class="col-lg-3 col-6">
                             <!-- small box -->
                             <div class="small-box bg-info">
                                 <div class="inner">
-                                    <h3>150</h3>
+                                    <h3 th:text="${totalOrder}"></h3>
 
-                                    <p>Đơn hàng mới</p>
+                                    <p>Đơn hàng mới trong tháng</p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-bag"></i>
@@ -84,12 +100,12 @@
                             </div>
                         </div>
                         <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
+                        <!-- <div class="col-lg-3 col-6">
+                            small box
                             <div class="small-box bg-success">
                                 <div class="inner">
                                     <h3>53<sup style="font-size: 20px">%</sup></h3>
-
+                        
                                     <p>Tỷ lệ thoát</p>
                                 </div>
                                 <div class="icon">
@@ -98,34 +114,18 @@
                                 <a href="#" class="small-box-footer">Thông tin thêm <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- ./col -->
                         <div class="col-lg-3 col-6">
                             <!-- small box -->
                             <div class="small-box bg-warning">
                                 <div class="inner">
-                                    <h3>44</h3>
+                                    <h3 th:text="${totalUser}"></h3>
 
-                                    <p>Người dùng đăng ký</p>
+                                    <p>Người dùng đăng ký trong tháng</p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">Thông tin thêm <i
-                                        class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-danger">
-                                <div class="inner">
-                                    <h3>65</h3>
-
-                                    <p>Lượt ghé thăm</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">Thông tin thêm <i
                                         class="fas fa-arrow-circle-right"></i></a>
@@ -157,6 +157,30 @@
                                 </div>
                                 <div class="card-body">
                                     <canvas id="canvasChart"
+                                        style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="col-lg-12 connectedSortable">
+                            <!-- solid sales graph -->
+                            <div class="card">
+                                <div class="card-header border-0">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-th mr-1"></i>
+                                        Biểu đồ người dùng
+                                    </h3>
+
+                                    <div class="card-tools">
+                                        <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="canvasChartUser"
                                         style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
                                 </div>
                             </div>
@@ -296,6 +320,48 @@
 		
         const ctx = document.getElementById('canvasChart').getContext('2d');
         new Chart(ctx, config);
+        
+        const data2 = {
+          labels: totalPriceLast6Months[0],
+          datasets: [
+            {
+              label: 'Người dùng mới',
+              data: totalPriceLast6Months[3],
+              borderColor: 'rgb(255, 159, 64)',
+              backgroundColor: 'rgb(255, 159, 64, 0.5)',
+              yAxisID: 'y',
+            }
+          ]
+        };
+        
+        const config2 = {
+   		  type: 'line',
+   		  data: data2,
+   		  options: {
+   		    responsive: true,
+   		    interaction: {
+   		      mode: 'index',
+   		      intersect: false,
+   		    },
+   		    stacked: false,
+   		    plugins: {
+   		      title: {
+   		        display: true,
+   		        text: 'Người dùng'
+   		      }
+   		    },
+   		    scales: {
+   		      y: {
+   		        type: 'linear',
+   		        display: true,
+   		        position: 'left',
+   		      }
+   		    }
+   		  },
+   		};
+		
+        const ctx2 = document.getElementById('canvasChartUser').getContext('2d');
+        new Chart(ctx2, config2);
     </script>
 </body>
 

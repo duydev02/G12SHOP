@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.g12shop.constant.SessionConstant;
 import com.g12shop.dto.CartDto;
-import com.g12shop.entity.Accounts;
+import com.g12shop.entity.Users;
 import com.g12shop.service.CartService;
 import com.g12shop.util.QuantityException;
 import com.g12shop.util.SessionUtil;
@@ -45,7 +45,7 @@ public class CartApi {
 	@GetMapping("/checkout")
 	public ResponseEntity<?> doGetCheckout(@RequestParam("address") String address, @RequestParam("phone") String phone,
 			HttpSession session) {
-		Accounts currentUser = (Accounts) session.getAttribute(SessionConstant.CURRENT_USER);
+		Users currentUser = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
 
 		if (!ObjectUtils.isEmpty(currentUser)) {
 			CartDto currentCart = SessionUtil.getCurrentCart(session);

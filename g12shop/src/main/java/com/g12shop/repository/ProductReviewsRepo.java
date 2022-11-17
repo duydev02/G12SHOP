@@ -19,12 +19,12 @@ public interface ProductReviewsRepo extends JpaRepository<ProductReviews, Long> 
 	// select * from product_reviews where productId = ? order by createdDate DESC
 	List<ProductReviews> findByProductIdOrderByCreatedDateDesc(Long id);
 
-	@Query(value = "INSERT INTO product_reviews (productId, accountId, [description], createdDate) "
+	@Query(value = "INSERT INTO product_reviews (productId, userId, [description], createdDate) "
 			+ "VALUES (?, ?, ?, GETDATE())", nativeQuery = true)
 	@Modifying
     @Transactional
-	void createReview(Long productId, Long accountId, String message);
+	void createReview(Long productId, Long userId, String message);
 
-	ProductReviews findTopByAccountIdOrderByCreatedDateDesc(Long accountId);
+	ProductReviews findTopByUserIdOrderByCreatedDateDesc(Long userId);
 
 }

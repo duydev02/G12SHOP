@@ -39,13 +39,13 @@ public class ProductReviewsServiceImpl implements ProductReviewsService {
 	}
 
 	@Override
-	public void createReview(Long productId, Long accountId, String message) {
-		productReviewsRepo.createReview(productId, accountId, message);
+	public void createReview(Long productId, Long userId, String message) {
+		productReviewsRepo.createReview(productId, userId, message);
 	}
 
 	@Override
-	public ProductReviews findTopByAccountIdOrderByCreatedDateDesc(Long accountId) {
-		return productReviewsRepo.findTopByAccountIdOrderByCreatedDateDesc(accountId);
+	public ProductReviews findTopByUserIdOrderByCreatedDateDesc(Long userId) {
+		return productReviewsRepo.findTopByUserIdOrderByCreatedDateDesc(userId);
 	}
 
 }

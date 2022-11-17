@@ -13,10 +13,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.g12shop.config.EncoderConfig;
-import com.g12shop.entity.Accounts;
+import com.g12shop.entity.Users;
 import com.g12shop.entity.Roles;
-import com.g12shop.repository.AccountsRepo;
-import com.g12shop.service.AccountsService;
+import com.g12shop.repository.UsersRepo;
+import com.g12shop.service.UsersService;
 import com.g12shop.service.RolesService;
 import com.g12shop.util.UserNotFoundExcepion;
 
@@ -24,10 +24,10 @@ import net.bytebuddy.utility.RandomString;
 
 @Service
 @Transactional(rollbackOn = { Exception.class, Throwable.class })
-public class AccountsServiceImpl implements AccountsService {
+public class UsersServiceImpl implements UsersService {
 
 	@Autowired
-	private AccountsRepo repo;
+	private UsersRepo repo;
 
 	@Autowired
 	private EncoderConfig encoderConfig;
@@ -39,56 +39,61 @@ public class AccountsServiceImpl implements AccountsService {
 	private RolesService rolesService;
 
 	@Override
-	public List<Accounts> findAll() {
-		return repo.findAll();
+	public List<Users> findAll() {
+		return repo.findByIsDeleted(Boolean.FALSE);
 	}
 
 	@Override
-	public Accounts doLogin(String usernameOrEmail, String password) throws UserNotFoundExcepion {
-		Accounts accountResponse = repo.findByUsernameOrEmailAndIsEnabledAndIsDeleted(usernameOrEmail, usernameOrEmail,
+	public Users findByUsername(String username) {
+		return repo.findByUsername(username);
+	}
+
+	@Override
+	public Users doLogin(String usernameOrEmail, String password) throws UserNotFoundExcepion {
+		Users userResponse = repo.findByUsernameOrEmailAndIsEnabledAndIsDeleted(usernameOrEmail, usernameOrEmail,
 				Boolean.TRUE, Boolean.FALSE);
 
-		if (accountResponse == null) {
-			throw new UserNotFoundExcepion("Account is not exists!");
-		} else if (accountResponse.getIsEnabled() == false) {
-			throw new UserNotFoundExcepion("Account not activated!");
-		} else if (accountResponse.getIsDeleted() == true) {
-			throw new UserNotFoundExcepion("Account has been deleted");
+		if (userResponse == null) {
+			throw new UserNotFoundExcepion("User is not exists!");
+		} else if (userResponse.getIsEnabled() == false) {
+			throw new UserNotFoundExcepion("User not activated!");
+		} else if (userResponse.getIsDeleted() == true) {
+			throw new UserNotFoundExcepion("User has been deleted");
 		} else {
 			Boolean checkPassword = encoderConfig.passwordEncoder().matches(password,
-					accountResponse.getHashPassword());
-			return checkPassword ? accountResponse : null;
+					userResponse.getHashPassword());
+			return checkPassword ? userResponse : null;
 		}
 	}
 
 	@Override
-	public Accounts doRegister(Accounts account) throws UserNotFoundExcepion {
-		if (existsUsername(account.getUsername())) {
-			throw new UserNotFoundExcepion("Account already exists!");
-		} else if (existsEmail(account.getEmail())) {
+	public Users doRegister(Users user) throws UserNotFoundExcepion {
+		if (existsUsername(user.getUsername())) {
+			throw new UserNotFoundExcepion("User already exists!");
+		} else if (existsEmail(user.getEmail())) {
 			throw new UserNotFoundExcepion("Email already exists!");
 		} else {
 			Roles role = rolesService.findByName("user");
-			account.setRoles(role);
-			account.setIsEnabled(Boolean.FALSE);
-			account.setIsDeleted(Boolean.FALSE);
-			String password = encoderConfig.passwordEncoder().encode(account.getHashPassword());
-			account.setHashPassword(password);
+			user.setRole(role);
+			user.setIsEnabled(Boolean.FALSE);
+			user.setIsDeleted(Boolean.FALSE);
+			String password = encoderConfig.passwordEncoder().encode(user.getHashPassword());
+			user.setHashPassword(password);
 
 			String randomCode = RandomString.make(64);
-			account.setVerificationCode(randomCode);
-			return repo.saveAndFlush(account);
+			user.setVerificationCode(randomCode);
+			return repo.saveAndFlush(user);
 		}
 	}
 
 	@Override
-	public void sendVerificationEmail(Accounts account, String siteURL) throws Exception {
+	public void sendVerificationEmail(Users user, String siteURL) throws Exception {
 		String subject = "G12SHOP - Verify your register";
 		String senderName = "G12SHOP";
-		String mailContent = "<p>Dear: " + account.getFullname() + ", </p>";
+		String mailContent = "<p>Dear: " + user.getFullname() + ", </p>";
 		mailContent += "<p>Please click the link below to cofirm your register!</p>";
 
-		String verifiURL = siteURL + "/verify?verificationCode=" + account.getVerificationCode();
+		String verifiURL = siteURL + "/verify?verificationCode=" + user.getVerificationCode();
 		mailContent += "<h1><a href = \"" + verifiURL + "\">Verification</a></h1>";
 		mailContent += "<p> Thank You </p>";
 
@@ -96,7 +101,7 @@ public class AccountsServiceImpl implements AccountsService {
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 
 		helper.setFrom("lamnhps16063@fpt.edu.vn", senderName);
-		helper.setTo(account.getEmail());
+		helper.setTo(user.getEmail());
 		helper.setSubject(subject);
 		helper.setText(mailContent, true);
 
@@ -104,55 +109,55 @@ public class AccountsServiceImpl implements AccountsService {
 	}
 
 	@Override
-	public Boolean verificationAccount(String verificationCode) {
-		Accounts account = repo.findByVerificationCode(verificationCode);
+	public Boolean verificationUser(String verificationCode) {
+		Users user = repo.findByVerificationCode(verificationCode);
 
-		if (account == null || account.getIsEnabled()) {
+		if (user == null || user.getIsEnabled()) {
 			return false;
 		} else {
-			account.setVerificationCode(null);
-			account.setIsEnabled(Boolean.TRUE);
-			repo.saveAndFlush(account);
+			user.setVerificationCode(null);
+			user.setIsEnabled(Boolean.TRUE);
+			repo.saveAndFlush(user);
 			return true;
 		}
 	}
 
 	@Override
-	public void changePassword(Accounts account, String newPassword) {
+	public void changePassword(Users user, String newPassword) {
 		String hashPassword = encoderConfig.passwordEncoder().encode(newPassword);
-		account.setHashPassword(hashPassword);
-		repo.saveAndFlush(account);
+		user.setHashPassword(hashPassword);
+		repo.saveAndFlush(user);
 	}
 	
 	@Override
-	public Accounts getResetPasswordToken(String token) {
+	public Users getResetPasswordToken(String token) {
 		// TODO Auto-generated method stub
 		return repo.findByResetPasswordToken(token);
 	}
 
 	@Override
 	public void forgotPassword(String token, String email) throws UserNotFoundExcepion {
-		Accounts account = repo.findByEmail(email);
+		Users user = repo.findByEmail(email);
 		
-		if(account == null) {
+		if(user == null) {
 			throw new UserNotFoundExcepion("Could not find any customer with email " + email); 
-		}else if(!account.getIsEnabled()) {
+		}else if(!user.getIsEnabled()) {
 			throw new UserNotFoundExcepion("Account not activated"); 
-		}else if(account.getIsDeleted()) {
+		}else if(user.getIsDeleted()) {
 			throw new UserNotFoundExcepion("Account has been deleted"); 
 		}else {
-			account.setResetPasswordToken(token);
-			repo.saveAndFlush(account);
+			user.setResetPasswordToken(token);
+			repo.saveAndFlush(user);
 		}
 	}
 
 	@Override
-	public void updatePassword(Accounts account, String newPassword) {
+	public void updatePassword(Users user, String newPassword) {
 		String hashPassword = encoderConfig.passwordEncoder().encode(newPassword);
 		
-		account.setHashPassword(hashPassword);
-		account.setResetPasswordToken(null);
-		repo.saveAndFlush(account);
+		user.setHashPassword(hashPassword);
+		user.setResetPasswordToken(null);
+		repo.saveAndFlush(user);
 	}
 
 	@Override
@@ -184,5 +189,11 @@ public class AccountsServiceImpl implements AccountsService {
 
 	private Boolean existsEmail(String email) {
 		return repo.findByEmail(email) != null ? true : false;
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void deleteLogical(String username) {
+		repo.deleteLogical(username);
 	}
 }

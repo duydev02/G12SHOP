@@ -15,4 +15,7 @@ public interface StatsRepo extends JpaRepository<Orders, Long> {
 
 	@Query(value = "{CALL sp_getTotalOrderPerMonth(:month, :year)}", nativeQuery = true)
 	String getTotalOrderPerMonth(@Param("month") String month, @Param("year") String year);
+
+	@Query(value = "{CALL sp_getTotalUserPerMonth(:month, :year)}", nativeQuery = true)
+	String getTotalUserPerMonth(@Param("month") String month, @Param("year") String year);
 }

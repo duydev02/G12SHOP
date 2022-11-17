@@ -41,4 +41,19 @@ public class StatsServiveImpl implements StatsService {
 		return result;
 	}
 
+	@Override
+	public String[][] getTotalPriceAndTotalOrderAndTotalUserLast6Months() {
+		String[][] result = new String[4][6];
+		YearMonth currentTimes = YearMonth.now();
+		for (int i = 0; i < 6; i++) {
+			String month = currentTimes.minusMonths((long) i).getMonthValue() + "";
+			String year = currentTimes.minusMonths((long) i).getYear() + "";
+			result[0][5 - i] = month + "-" + year;
+			result[1][5 - i] = repo.getTotalPricePerMonth(month, year);
+			result[2][5 - i] = repo.getTotalOrderPerMonth(month, year);
+			result[3][5 - i] = repo.getTotalUserPerMonth(month, year);
+		}
+		return result;
+	}
+
 }

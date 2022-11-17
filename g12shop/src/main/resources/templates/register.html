@@ -21,7 +21,7 @@
             <div class="card-body p-4 p-sm-5">
                 <h4 class="card-title text-center text-uppercase font-weight-bold" style="color: #7fad39;">Đăng ký</h4>
                  	<h3 style="color:red" th:text="${message}"></h3>
-                <form method = "post" th:object="${accountRequest}" th:action="@{/register}">
+                <form method = "post" th:object="${userRequest}" th:action="@{/register}">
                     <div class="form-floating mb-3">
                         <label for="floatingInput">Tên đăng nhập</label>
                         <input type="text" class="form-control" name="username" id="floatingInput" placeholder="">

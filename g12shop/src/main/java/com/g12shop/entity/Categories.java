@@ -20,9 +20,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Categories implements Serializable {
 
-	/**
-		 * 
-		 */
 	private static final long serialVersionUID = -3789429125115191449L;
 
 	@Id
