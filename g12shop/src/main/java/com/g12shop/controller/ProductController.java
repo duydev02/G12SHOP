@@ -21,9 +21,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.g12shop.constant.SessionConstant;
 import com.g12shop.entity.Accounts;
 import com.g12shop.entity.Categories;
+import com.g12shop.entity.ProductImages;
 import com.g12shop.entity.ProductReviews;
 import com.g12shop.entity.Products;
 import com.g12shop.service.CategoriesService;
+import com.g12shop.service.ProductImagesService;
 import com.g12shop.service.ProductReviewsService;
 import com.g12shop.service.ProductTypesService;
 import com.g12shop.service.ProductsService;
@@ -34,16 +36,19 @@ import com.g12shop.util.UserNotFoundExcepion;
 public class ProductController {
 
 	@Autowired
-	ProductReviewsService productReviewsService;
+	private ProductReviewsService productReviewsService;
 
 	@Autowired
-	ProductsService productsService;
+	private ProductsService productsService;
 
 	@Autowired
-	CategoriesService categoriesService;
+	private CategoriesService categoriesService;
 	
 	@Autowired
-	ProductTypesService productTypesService;
+	private ProductTypesService productTypesService;
+	
+	@Autowired
+	private ProductImagesService productImagesService;
 
 	private static final int PAGE_SIZE = 9;
 
@@ -103,7 +108,9 @@ public class ProductController {
 		System.out.println(product);
 		List<ProductReviews> productReviews = productReviewsService.findAllByProductId(product.getId());
 		List<Products> relatedProducts = productsService.findByRelatedProducts(product.getProductType(), slug);
+		List<ProductImages> productImages = productImagesService.findByProductId(product.getId());
 		model.addAttribute("product", product);
+		model.addAttribute("productImages", productImages);
 		model.addAttribute("productReviews", productReviews);
 		model.addAttribute("relatedProducts", relatedProducts);
 		return "shop-details";

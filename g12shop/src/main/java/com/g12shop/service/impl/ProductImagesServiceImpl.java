@@ -1,5 +1,6 @@
 package com.g12shop.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class ProductImagesServiceImpl implements ProductImagesService {
 	public Optional<ProductImages> findById(Long id) {
 		return imagesRepo.findById(id);
 	}
-	
-	
+
+	@Override
+	public List<ProductImages> findByProductId(Long id) {
+		return imagesRepo.findByProductId(id);
+	}
+
 }

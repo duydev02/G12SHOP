@@ -6,7 +6,7 @@
 <meta name="keywords" content="Ogani, unica, creative, html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>G12SHOP | Chi tiết sản phẩm</title>
+<title>G12SHOP | [[${product.name}]]</title>
 <link rel="icon" type="image/x-icon" th:href="@{/user/img/favicon.ico}">
 
 <th:block th:include="@{/fragments/css}"></th:block>
@@ -27,12 +27,8 @@
 						<div class="product__details__pic__slider owl-carousel">
 							<img th:data-imgbigurl="|/user/img/product/${product.id}/${product.imgName}|"
                                 th:src="|/user/img/product/${product.id}/${product.imgName}|" alt="">
-                            <img th:data-imgbigurl="@{/user/img/product/details/product-details-3.jpg}"
-                                th:src="@{/user/img/product/details/product-details-3.jpg}" alt="">
-                            <img th:data-imgbigurl="@{/user/img/product/details/product-details-4.jpg}"
-                                th:src="@{/user/img/product/details/product-details-4.jpg}" alt="">
-                            <img th:data-imgbigurl="@{/user/img/product/details/product-details-5.jpg}"
-                                th:src="@{/user/img/product/details/product-details-5.jpg}" alt="">
+                            <img th:each="productImage : ${productImages}" th:data-imgbigurl="|/user/img/product/${productImage.product.id}/${productImage.imgName}|"
+                                th:src="|/user/img/product/${productImage.product.id}/${productImage.imgName}|" alt="Product Image">
                         </div>
 					</div>
                 </div>
@@ -75,12 +71,15 @@
                                 <div class="row d-flex flex-wrap justify-content-center">
                                     <div class="col-sm-8">   
                                         <form id="foo" method="post" th:action="|/comment/${product.id}|">
-                                            <h3 class="pull-left">New Comment</h3>
-                                            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                                            <h3 class="pull-left">Viết bình luận</h3>
+                                            <button type="submit" class="btn btn-primary pull-right">Đăng</button>
                                             <fieldset>
                                                 <div class="row">
                                                     <div class="col-sm-3 col-lg-2 hidden-xs"> 
-                                                        <img class="img-responsive" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                                                        <img class="img-responsive" alt="Current user avatar" th:if="${session.currentUser != null}"
+                                                        	th:src="|/user/img/user/${session.currentUser.imgUrl == null || session.currentUser.imgUrl == '' ? 'default.png' : session.currentUser.imgUrl}|">
+                                                        <img class="img-responsive" alt="Current user avatar" th:if="${session.currentUser == null}"
+                                                        	th:src="|/user/img/user/default.png|">
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-9 col-lg-10">
                                                         <textarea class="form-control" id="message" name="message" placeholder="Your message" required></textarea>
@@ -94,7 +93,8 @@
 	                                        <div class="pull-right" th:text="${commentMessage}"></div>
 	                                        <h3 th:text="${#lists.size(productReviews) > 0 ? #lists.size(productReviews) : 'Chưa có'} + ' đánh giá'"></h3>                                     
 	                                        <div class="media" th:if=${productReviews} th:each="productReview : ${productReviews}">
-	                                            <a class="pull-left" href="#"><img class="media-object" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt=""></a>
+	                                            <a class="pull-left" href="#"><img class="media-object"
+	                                            	th:src="|/user/img/user/${productReview.account.imgUrl == null || productReview.account.imgUrl == '' ? 'default.png' : productReview.account.imgUrl}|" alt="Avatar"></a>
 	                                            <div class="media-body">
 	                                                <h4 class="media-heading" th:text="${productReview.account.fullname}"></h4>
 	                                                <p th:text="${productReview.description}"></p>
