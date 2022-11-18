@@ -12,6 +12,8 @@ public interface UsersService {
 
 	List<Users> findAll();
 
+	List<Users> findByIsDeleted();
+
 	Users findByUsername(String username);
 
 	//Login
@@ -49,5 +51,7 @@ public interface UsersService {
 	//Change Pasword
 	void updatePassword(Users user, String newPassword);
 
-	void deleteLogical(String user);
+	void deleteLogical(String username);
+
+	void recoveryLogical(String username);
 }

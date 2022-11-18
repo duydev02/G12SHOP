@@ -46,6 +46,11 @@ public class UsersServiceImpl implements UsersService {
 	}
 
 	@Override
+	public List<Users> findByIsDeleted() {
+		return repo.findByIsDeleted(Boolean.TRUE);
+	}
+
+	@Override
 	public Users findByUsername(String username) {
 		return repo.findByUsername(username);
 	}
@@ -135,6 +140,18 @@ public class UsersServiceImpl implements UsersService {
 			user.setVerificationCode(randomCode);
 			return repo.saveAndFlush(user);
 		}
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void deleteLogical(String username) {
+		repo.deleteLogical(username);
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void recoveryLogical(String username) {
+		repo.recoveryLogical(username);
 	}
 
 	@Override
@@ -238,11 +255,5 @@ public class UsersServiceImpl implements UsersService {
 
 	private Boolean existsEmail(String email) {
 		return repo.findByEmail(email) != null ? true : false;
-	}
-
-	@Override
-	@Transactional(rollbackOn = { Exception.class, Throwable.class })
-	public void deleteLogical(String username) {
-		repo.deleteLogical(username);
 	}
 }

@@ -30,6 +30,10 @@ public interface UsersRepo extends JpaRepository<Users, Long> {
 	void deleteLogical(String username);
 
 	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE users SET isDeleted = 0 WHERE username = ?", nativeQuery = true)
+	void recoveryLogical(String username);
+
+	@Modifying(clearAutomatically = true)
 	@Query(value = "UPDATE users SET email = ?1, hashPassword = ?2, fullname = ?3, imgUrl = ?4 WHERE username = ?5", nativeQuery = true)
 	void update(String email, String hashPassword, String fullname, String imgUrl, String username);
 

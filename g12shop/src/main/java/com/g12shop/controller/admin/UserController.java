@@ -37,11 +37,34 @@ public class UserController {
 	@GetMapping("")
 	public String doGetIndex(Model model) {
 		model.addAttribute("isAdminUserPage", true);
+		model.addAttribute("isAdminUserPage1", true);
 
 		List<Users> users = usersService.findAll();
 		model.addAttribute("users", users);
 		model.addAttribute("userRequest", new Users());
 		return "admin/user";
+	}
+	
+	@GetMapping("/recovery")
+	public String doGetRecovery(Model model) {
+		model.addAttribute("isAdminUserPage", true);
+		model.addAttribute("isAdminUserPage2", true);
+
+		List<Users> users = usersService.findByIsDeleted();
+		model.addAttribute("users", users);
+		return "admin/user-recovery";
+	}
+	
+	@GetMapping("/recovery/recovery")
+	public String doGetRecoveryTrue(@RequestParam("username") String username, RedirectAttributes redirectAttributes) {
+		try {
+			usersService.recoveryLogical(username);
+			redirectAttributes.addFlashAttribute("succeedMessage", "User " + username + " was recovered");
+		} catch (Exception e) {
+			e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "Cannot recovery user " + username);
+		}
+		return "redirect:/admin/user/recovery";
 	}
 
 	// /admin/user/delete?username={...}
