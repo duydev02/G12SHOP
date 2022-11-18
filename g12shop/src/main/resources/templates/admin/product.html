@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Quản lý người dùng - G12ADMIN</title>
+    <title>Quản lý sản phẩm - G12ADMIN</title>
 
     <!-- Favicon  -->
 	<link rel="shortcut icon" type="image/x-icon" th:href="@{/user/img/favicon.ico}">
@@ -61,13 +61,13 @@
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-sm-6">
-							<h1>Quản lý người dùng</h1>
+							<h1>Quản lý sản phẩm</h1>
 						</div>
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-right">
 								<li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li>
-								<li class="breadcrumb-item"><a th:href="@{/admin/user}">Người dùng</a></li>
-								<li class="breadcrumb-item active">Quản lý người dùng</li>
+								<li class="breadcrumb-item"><a th:href="@{/admin/product}">Sản phẩm</a></li>
+								<li class="breadcrumb-item active">Quản lý sản phẩm</li>
 							</ol>
 						</div>
 					</div>
@@ -82,9 +82,9 @@
 						<div class="col-12">
 							<div class="card">
 								<div class="card-header">
-									<h3 class="card-title" style="font-size: 24px">Danh sách người dùng</h3>
+									<h3 class="card-title" style="font-size: 24px">Danh sách sản phẩm</h3>
 									<button style="float: right" id="createBtn" type="button"
-										class="btn btn-success">Tạo người dùng mới</button>
+										class="btn btn-success">Tạo sản phẩm mới</button>
 								</div>
 								<!-- /.card-header -->
 								<div class="card-body">
@@ -92,33 +92,41 @@
 										<thead>
 											<tr>
 												<th></th>
-												<th>Username</th>
-												<th>Fullname</th>
-												<th>Email</th>
-												<th style="width: 80px;">Avatar</th>
-												<th>Role</th>
+												<th>Id</th>
+												<th>Name</th>
+												<th>Province</th>
+												<th>Type</th>
+												<th>Quantity</th>
+												<th>Price</th>
+												<th>Discount</th>
+												<th style="width: 80px;">Image</th>
+												<th>Slug</th>
 												<th>Action</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr th:each="user, index : ${users}">
+											<tr th:each="product, index : ${products}">
 												<td th:text="${index.index + 1}"></td>
-												<td th:text="${user.username}"></td>
-												<td th:text="${user.fullname}"></td>
-												<td th:text="${user.email}"></td>
+												<td th:text="${product.id}"></td>
+												<td th:text="${product.name}"></td>
+												<td th:text="${product.category.name}"></td>
+												<td th:text="${product.productType.name}"></td>
+												<td th:text="${product.quantity}"></td>
+												<td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></td>
+												<td th:text="${product.discount}"></td>
 												<td>
-													<img th:src="@{'/user-image/' + ${user.imgUrl == null || user.imgUrl == '' ? 'default.png' : user.imgUrl}}"
-														class="elevation-2" alt="User image"
+													<img th:src="@{'/product-image/' + ${product.id} + '/' + ${product.imgName == null ? 'default.png' : product.imgName}}"
+														class="elevation-2" alt="Product image"
 														style="width: 50px; height: 50px">
 												</td>
-												<td th:text="${user.role.name}"></td>
+												<td th:text="${product.slug}"></td>
 												<td align="center">
 													<button class="btn btn-success"
-														th:attr="onclick='editUser(\'' + ${user.username} + '\')'">
+														th:attr="onclick='editProduct(\'' + ${product.id} + '\')'">
 														<i class="fa fa-edit" aria-hidden="true"></i>
 													</button>
 													<a class="btn btn-danger"
-														th:attr="onclick=|deleteUser('${user.username}')|">
+														th:attr="onclick=|deleteProduct('${product.id}')|">
 														<i class="fa fa-trash" aria-hidden="true"></i>
 													</a>
 												</td>
@@ -140,45 +148,80 @@
 							<!-- general form elements -->
 							<div class="card card-primary">
 								<div class="card-header">
-									<h3 class="card-title">Chi tiết người dùng</h3>
+									<h3 class="card-title">Chi tiết sản phẩm</h3>
 								</div>
 								<!-- /.card-header -->
 								<!-- form start -->
-								<form id="form" method="POST" th:object="${userRequest}" enctype="multipart/form-data">
+								<form id="form" method="POST" th:object="${productRequest}"
+									enctype="multipart/form-data">
 									<div class="card-body">
 										<div class="row">
 											<div class="col-8">
 												<div class="form-group">
-													<label for="username">Username</label>
-													<input type="text" class="form-control" id="username"
-														readonly="true" th:field="*{username}">
-													<p id="errorUsername" style="color: #ff3333"></p>
+													<label for="id">Id</label>
+													<input type="text" class="form-control" id="id" readonly="true"
+														th:field="*{id}">
 												</div>
 												<div class="form-group">
-													<label for="email">Email</label>
-													<input type="email" class="form-control" id="email" readonly="true"
-														th:field="*{email}">
-													<p id="errorEmail" style="color: #ff3333"></p>
+													<label for="name">Name</label>
+													<input type="text" class="form-control" id="name" readonly="true"
+														th:field="*{name}">
+													<p id="errorName" style="color: #ff3333"></p>
+												</div>
+												<div class="mb-3">
+													<label for="categories" class="form-label">Province</label>
+													<select class="form-control" name="categories" id="categories"
+														disabled>
+														<option value="0">-- Choose province --</option>
+														<option th:each="category : ${categories}"
+															th:value="${category.id}"
+															th:text="${category.name}"
+															th:selected="${category.id == categorySelected}">
+														</option>
+													</select>
+													<p id="errorCategories" style="color: #ff3333"></p>
+												</div>
+												<div class="mb-3">
+													<label for="productTypes" class="form-label">Brand</label>
+													<select class="form-control" name="productTypes" id="productTypes"
+														disabled>
+														<option value="0">-- Choose product type --</option>
+														<option th:each="productType : ${productTypes}"
+															th:value="${productType.id}"
+															th:text="${productType.name}"
+															th:selected="${productType.id == productTypeSelected}">
+														</option>
+													</select>
+													<p id="errorProductTypes" style="color: #ff3333"></p>
 												</div>
 												<div class="form-group">
-													<label for="password">Password</label>
-													<input type="password" class="form-control" id="password"
-														readonly="true" th:field="*{hashPassword}">
-													<p id="errorPassword" style="color: #ff3333"></p>
+													<label for="quantity">Quantity</label>
+													<input type="number" class="form-control" id="quantity"
+														readonly="true" th:field="*{quantity}">
+													<p id="errorQuantity" style="color: #ff3333"></p>
 												</div>
 												<div class="form-group">
-													<label for="confirmPass">Confirm password</label>
-													<input type="password" class="form-control" id="confirmPass"
-														readonly="true">
-													<p id="errorConfirmPass" style="color: #ff3333"></p>
+													<label for="price">Price</label>
+													<input type="number" class="form-control" id="price" readonly="true"
+														th:field="*{price}">
+													<p id="errorPrice" style="color: #ff3333"></p>
 												</div>
 												<div class="form-group">
-													<label for="fullname">Fullname</label>
-													<input type="text" class="form-control" id="fullname"
-														readonly="true" th:field="*{fullname}">
-													<p id="errorFullname" style="color: #ff3333"></p>
-													<input type="hidden" id="hiddenImgUrl" />
-													<input type="hidden" id="sendImgUrl" />
+													<label for="discount">Discount</label>
+													<input type="number" class="form-control" id="discount" readonly="true"
+														th:field="*{discount}">
+													<p id="errorDiscount" style="color: #ff3333"></p>
+												</div>
+												<div class="form-group">
+													<label for="description">Description</label>
+													<textarea class="form-control" id="description" name="description"
+          												rows="5" cols="33" readonly="true" th:field="*{description}"></textarea>
+												</div>
+												<div class="form-group">
+													<label for="slug">Slug</label>
+													<input type="text" class="form-control" id="slug" readonly="true"
+														th:field="*{slug}">
+													<p id="errorSlug" style="color: #ff3333"></p>
 												</div>
 											</div>
 											<div class="col-4">
@@ -188,17 +231,16 @@
 														<div class="text-center">
 															<img class="profile-user-img img-fluid img-circle"
 																style="width: 212px; height: 212px"
-																th:src="@{'/user-image/' + ${userRequest.imgUrl == null ? 'default.png' : userRequest.imgUrl}}"
-																alt="User profile picture" id="userImgUpload">
+																th:src="@{'/product-image/' + ${productRequest.id} + '/' + ${productRequest.imgName == null ? 'default.png' : productRequest.imgName}}"
+																alt="Product picture" id="productImgUpload">
 														</div>
 														<br />
 														<div class="form-group">
-															<label for="inputFile">Avatar</label>
+															<label for="inputFile">Picture</label>
 															<div class="input-group">
 																<div class="custom-file">
 																	<input type="file" class="custom-file-input"
-																		id="inputFile" name="attach"
-																		accept="image/png, image/jpeg">
+																		id="inputFile" name="attach">
 																	<label class="custom-file-label"
 																		for="inputFile">Choose file</label>
 																</div>
@@ -227,7 +269,6 @@
 							<!-- /.card -->
 						</div>
 					</div>
-					
 				</div>
 				<!-- /.container-fluid -->
 			</section>
@@ -279,7 +320,7 @@
 				'#example1_wrapper .col-md-6:eq(0)'
 			);
 		});
-
+	 	
 		// Hien thi anh khi chon file anh khac
 	    $(document).on('input', function () {
 			$('#inputFile').change(function () {
@@ -297,7 +338,7 @@
 
 			reader.readAsDataURL(file);
 		};
-	
+		
 		// Lua chon thong bao thanh cong hay that bai, dat thoi gian bao lau se bien mat
 		$(document).ready(function () {
 			var errorMessage = $('#errorMessage').text();
@@ -317,73 +358,91 @@
 				$('#thongBao').css('display', 'none');
 			}, 5000);
 		});
-
-		// Delete
-		function deleteUser(username) {
-			if (confirm("Bạn có muốn xóa tài khoản có username: " + username)) {
-				window.location.href = '/admin/user/delete?username=' + username;
+		
+		// Delete san pham
+		function deleteProduct(id) {
+			if (confirm("Bạn có muốn xóa sản phẩm có id: " + id)) {
+				window.location.href = '/admin/product/delete?id=' + id;
 			}
 		}
-	
-		// Xu li su kien khi nhan vao nut 'Tao nguoi dung moi'
+		
 		$('#createBtn').click(function () {
 			$('html, body').animate({
 				scrollTop: $('#form').offset().top
 			}, 1000);
 			$('#form :input').prop('readonly', false);
+			$('#id').prop('readonly', true);
+			$("#categories, #productTypes").prop('disabled', false);
 			$('#submitCreate').prop('disabled', false);
-			$('#form').prop('action', '/admin/user/create');
+			$('#form').prop('action', '/admin/product/create');
 		});
-
-		// Validate form khi nhan vao submit tao moi nguoi dung
+		
 		$('#submitCreate').click(function () {
-			var pw = $('#password').val();
-			var cpw = $('#confirmPass').val();
-			var username = $('#username').val();
-			var email = $('#email').val();
-			var fullname = $('#fullname').val();
+			var name = $('#name').val();
+			var category = $('#categories').val();
+			var productType = $('#productTypes').val();
+			var quantity = $('#quantity').val();
+			var price = $('#price').val();
+			var slug = $('#slug').val();
 			var check = true;
 			// >> Check begin
-			// Username
-			if (username.length == 0) {
-				$('#errorUsername').text('Username must not be blank');
+			// Check name
+			if (name.length == 0) {
+				$('#errorName').text('Name must not be blank');
 				check = false;
-			} else if (username.length < 5 || username.length > 20) {
-				$('#errorUsername').text('Username must be between 5 - 20 characters');
+			} else if (name.length < 3 || name.length > 255) {
+				$('#errorName').text('Name must be greater than 3 and less than 255 characters');
 				check = false;
 			} else {
-				$('#errorUsername').text('');
+				$('#errorName').text('');
 			}
-			// Email
-			const validateEmail = (email) => {
-				return String(email)
-					.toLowerCase()
-					.match(
-						/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-					);
-			};
-			if (!validateEmail(email)) {
-				$('#errorEmail').text('Email is not valid');
+			// Check category
+			if (category == 0) {
+				$('#errorCategories').text('Please choose province');
 				check = false;
 			} else {
-				$('#errorEmail').text('');
+				$('#errorCategories').text('');
 			}
-			// Full name
-			if (fullname.length == 0) {
-				$('#errorFullname').text('Fullname must not be blank');
-				check = false;
-			} else if (fullname.length < 5 || fullname.length > 50) {
-				$('#errorFullname').text('Fullname must be between 5 - 50 characters');
+			// Check productType
+			if (productType == 0) {
+				$('#errorProductTypes').text('Please choose product type');
 				check = false;
 			} else {
-				$('#errorFullname').text('');
+				$('#errorProductTypes').text('');
 			}
-			// Password
-			if (pw != cpw) {
-				$('#errorConfirmPass').text('Confirmation password is not correct');
+			// Check quantity
+			if (quantity == null || quantity == "") {
+				$('#errorQuantity').text('Quantity must not be null');
+				check = false;
+			} else if (quantity < 0 || quantity > 10000) {
+				$('#errorQuantity').text('Quantity must be between 0 - 10000');
 				check = false;
 			} else {
-				$('#errorConfirmPass').text('');
+				$('#errorQuantity').text('');
+			}
+			// Check price
+			if (price == null || price == "") {
+				$('#errorPrice').text('Price must not be null');
+				check = false;
+			} else if (price < 0 || price > 10000) {
+				$('#errorPrice').text('Price must be between 0 - 100000');
+				check = false;
+			} else {
+				$('#errorPrice').text('');
+			}
+			// Check slug
+			var slugCheck = /^[a-z0-9-]+$/;
+			if (slug.length == 0) {
+				$('#errorSlug').text('Slug must not be blank');
+				check = false;
+			} else if (slug.length < 3 || slug.length > 255) {
+				$('#errorSlug').text('Slug must be greater than 3 and less than 255 characters');
+				check = false;
+			} else if (!slugCheck.test(slug)) {
+				$('#errorSlug').text('Slug must be lowercase, include the characters a-z 0-9 and -');
+				check = false;
+			} else {
+				$('#errorSlug').text('');
 			}
 			// << Check end
 			// Result
@@ -391,74 +450,6 @@
 				$('#form').submit();
 			}
 		});
-
-		function editUser(username) {
-			var url = '/admin/user/edit?username=' + username;
-			$.get(url).done(function (data) {
-				$('#form').replaceWith(data);
-				$('html, body').animate({
-					scrollTop: $('#form').offset().top
-				}, 1000);
-				$('#form :input').prop('readonly', false);
-				$('input#username').prop('readonly', true);
-				$('#submitUpdate').prop('disabled', false);
-				$('#form').prop('action', '/admin/user/edit');
-			});
-		}
-
-		function submitFormEdit() {
-			var pw = $('#password').val();
-			var cpw = $('#confirmPass').val();
-			var username = $('#username').val();
-			var email = $('#email').val();
-			var fullname = $('#fullname').val();
-			var check = true;
-			// Username
-			if (username == null) {
-				$('#errorUsername').text('Username must not be blank');
-				check = false;
-			} else if (username.length < 5 || username.length > 20) {
-				$('#errorUsername').text('Username must be between 5 - 20 characters');
-				check = false;
-			} else {
-				$('#errorUsername').text('');
-			}
-			// Email
-			const validateEmail = (email) => {
-				return String(email)
-					.toLowerCase()
-					.match(
-						/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-					);
-			};
-			if (!validateEmail(email)) {
-				$('#errorEmail').text('Email is not valid');
-				check = false;
-			} else {
-				$('#errorEmail').text('');
-			}
-			// Full name
-			if (fullname == null) {
-				$('#errorFullname').text('Fullname must not be blank');
-				check = false;
-			} else if (fullname.length < 5 || fullname.length > 50) {
-				$('#errorFullname').text('Fullname must be between 5 - 50 characters');
-				check = false;
-			} else {
-				$('#errorFullname').text('');
-			}
-			// Password
-			if (pw != cpw) {
-				$('#errorConfirmPass').text('Confirmation password is not correct');
-				check = false;
-			} else {
-				$('#errorConfirmPass').text('');
-			}
-			// Result
-			if (check) {
-				$('#form').submit();
-			}
-		}
 		
 		function cancel() {
 			location.reload();

@@ -32,4 +32,6 @@ public interface ProductsService {
 	List<Products> findByKeywords(String key);
 
 	void updateQuantity(Integer newQuantity, Long productId);
+
+	void deleteLogical(Long id);
 }

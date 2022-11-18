@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageApi {
 
 	@GetMapping("user-image/{photo}")
-	public ResponseEntity<ByteArrayResource> getImage(@PathVariable("photo") String photo) {
+	public ResponseEntity<ByteArrayResource> getUserImage(@PathVariable("photo") String photo) {
 		if (!photo.equals("") || photo != null) {
 			try {
 				Path filename = Paths.get("target/classes/static/user/img/user", photo);
@@ -30,4 +30,32 @@ public class ImageApi {
 		return ResponseEntity.badRequest().build();
 	}
 
+	@GetMapping("product-image/{productId}/{photo}")
+	public ResponseEntity<ByteArrayResource> getProductImage(@PathVariable("productId") String productId,
+			@PathVariable("photo") String photo) {
+		if (!photo.equals("") || photo != null) {
+			if (photo.equals("default.png")) {
+				try {
+					Path filename = Paths.get("target/classes/static/user/img/product", photo);
+					byte[] buffer = Files.readAllBytes(filename);
+					ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
+					return ResponseEntity.ok().contentLength(buffer.length)
+							.contentType(MediaType.parseMediaType("image/png")).body(byteArrayResource);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			} else {
+				try {
+					Path filename = Paths.get("target/classes/static/user/img/product", productId, photo);
+					byte[] buffer = Files.readAllBytes(filename);
+					ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
+					return ResponseEntity.ok().contentLength(buffer.length)
+							.contentType(MediaType.parseMediaType("image/png")).body(byteArrayResource);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
+		return ResponseEntity.badRequest().build();
+	}
 }

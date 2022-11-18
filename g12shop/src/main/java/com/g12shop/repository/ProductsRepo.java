@@ -50,6 +50,10 @@ public interface ProductsRepo extends JpaRepository<Products, Long> {
 	Page<Products> findByKeywords(String key, PageRequest of);
 
 	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE products SET isDeleted = 1 WHERE id = ?", nativeQuery = true)
+	void deleteLogical(Long id);
+
+	@Modifying(clearAutomatically = true)
 	@Query(value = "UPDATE products SET quantity = ? WHERE id = ?", nativeQuery = true)
 	void updateQuantity(Integer newQuantity, Long productId);
 }

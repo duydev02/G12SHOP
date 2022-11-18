@@ -28,7 +28,7 @@
 	                    </a>
 	                </li>
 	                <li class="nav-item" th:classappend="${isAdminUserPage} ? menu-open">
-	                    <a th:href="@{/admin/user}" class="nav-link" th:classappend="${isAdminUserPage} ? active">
+	                    <a th:href="@{/admin/user}" class="nav-link" th:classappend="${isAdminUserPage1} ? active">
 	                        <i class="nav-icon fas fa-user"></i>
 	                        <p>Người dùng<i class="right fas fa-angle-left"></i></p>
 	                    </a>
@@ -47,11 +47,25 @@
 			              </li>
 			            </ul>
 	                </li>
-	                <li class="nav-item">
+	                <li class="nav-item" th:classappend="${isAdminProductPage} ? menu-open">
 	                    <a th:href="@{/admin/product}" class="nav-link">
 	                        <i class="nav-icon fas fa-chart-pie"></i>
-							<p>Sản phẩm</p>
+							<p>Sản phẩm<i class="right fas fa-angle-left"></i></p></p>
 	                    </a>
+	                    <ul class="nav nav-treeview">
+			              <li class="nav-item">
+			                <a th:href="@{/admin/product}" class="nav-link" th:classappend="${isAdminProductPage1} ? active">
+			                  <i class="far fa-circle nav-icon"></i>
+			                  <p>Quản lý</p>
+			                </a>
+			              </li>
+			              <li class="nav-item">
+			                <a th:href="@{/admin/product/image}" class="nav-link" th:classappend="${isAdminProductPage2} ? active">
+			                  <i class="far fa-circle nav-icon"></i>
+			                  <p>Hình ảnh sản phẩm</p>
+			                </a>
+			              </li>
+			            </ul>
 	                </li>
 	                <li class="nav-item">
 	                    <a th:href="@{/admin/order}" class="nav-link">

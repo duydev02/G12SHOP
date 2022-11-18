@@ -3,6 +3,8 @@ package com.g12shop.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,6 +90,12 @@ public class ProductsServiceImpl implements ProductsService {
 		} else {
 			throw new Exception("Page number must be greater than 0");
 		}
+	}
+
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void deleteLogical(Long id) {
+		repo.deleteLogical(id);
 	}
 
 	@Override
