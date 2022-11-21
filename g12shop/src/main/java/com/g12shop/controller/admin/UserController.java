@@ -114,16 +114,18 @@ public class UserController {
 		} else {
 			try {
 				if (!attach.isEmpty()) {
-					Path path = Paths.get("target/classes/static/user/img/user/");
+					Path path = Paths.get("src/main/resources/static/user/img/user");
 
 					if (!Files.exists(path)) {
 						Files.createDirectories(path);
 					}
 
 					InputStream inputStream = attach.getInputStream();
-					Files.copy(inputStream, path.resolve(attach.getOriginalFilename()),
+					String s = System.currentTimeMillis() + attach.getOriginalFilename();
+					String imageHashName = Integer.toHexString(s.hashCode()) + s.substring(s.lastIndexOf("."));
+					Files.copy(inputStream, path.resolve(imageHashName),
 							StandardCopyOption.REPLACE_EXISTING);
-					userRequest.setImgUrl(attach.getOriginalFilename());
+					userRequest.setImgUrl(imageHashName);
 				}
 				String siteURL = SessionUtil.getSiteURL(request);
 				usersService.save(userRequest, siteURL);
@@ -165,16 +167,18 @@ public class UserController {
 		} else {
 			try {
 				if (!attach.isEmpty()) {
-					Path path = Paths.get("target/classes/static/user/img/user/");
+					Path path = Paths.get("src/main/resources/static/user/img/user");
 
 					if (!Files.exists(path)) {
 						Files.createDirectories(path);
 					}
 
 					InputStream inputStream = attach.getInputStream();
-					Files.copy(inputStream, path.resolve(attach.getOriginalFilename()),
+					String s = System.currentTimeMillis() + attach.getOriginalFilename();
+					String imageHashName = Integer.toHexString(s.hashCode()) + s.substring(s.lastIndexOf("."));
+					Files.copy(inputStream, path.resolve(imageHashName),
 							StandardCopyOption.REPLACE_EXISTING);
-					userRequest.setImgUrl(attach.getOriginalFilename());
+					userRequest.setImgUrl(imageHashName);
 				} else {
 					Users checkUser = usersService.findByUsername(userRequest.getUsername());
 					userRequest.setImgUrl(checkUser.getImgUrl());

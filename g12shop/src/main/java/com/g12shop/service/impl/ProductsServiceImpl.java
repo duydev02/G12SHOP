@@ -103,4 +103,32 @@ public class ProductsServiceImpl implements ProductsService {
 		repo.updateQuantity(newQuantity, productId);
 	}
 
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void save(Products productRequest, Long categoryId, Long productTypeId) throws Exception {
+		if (existsProductSlug(productRequest.getSlug())) {
+			throw new Exception("Slug already exists!");
+		}
+		String name = productRequest.getName();
+		Integer quantity = productRequest.getQuantity();
+		Double price = productRequest.getPrice();
+		Integer discount = 0;
+		if (productRequest.getDiscount() != null) {
+			discount = productRequest.getDiscount();
+		}
+		String imgName = productRequest.getImgName();
+		String description = "";
+		if (productRequest.getDescription() != null) {
+			description = productRequest.getDescription();
+		}
+		String slug = productRequest.getSlug();
+		// categoryId
+		// productTypeId
+		repo.save(name, quantity, price, discount, imgName, description, slug, categoryId, productTypeId);
+	}
+
+	private Boolean existsProductSlug(String slug) {
+		return repo.findBySlug(slug) != null ? true : false;
+	}
+
 }

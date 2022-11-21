@@ -34,4 +34,6 @@ public interface ProductsService {
 	void updateQuantity(Integer newQuantity, Long productId);
 
 	void deleteLogical(Long id);
+
+	void save(Products productRequest, Long categoryId, Long productTypeId) throws Exception;
 }

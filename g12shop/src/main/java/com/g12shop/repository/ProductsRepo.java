@@ -23,23 +23,26 @@ public interface ProductsRepo extends JpaRepository<Products, Long> {
 	// select * from products where categoryId = ? and discount > ?
 	List<Products> findByCategoryIdAndDiscountGreaterThan(Long categoryId, Integer discount);
 
-	//select * from products where isdeleted = ? and quantity > ?
+	// select * from products where isdeleted = ? and quantity > ?
 	List<Products> findByIsDeletedAndQuantityGreaterThan(Boolean isDeleted, Integer quantity);
 
 	// Phân trang
-	//select * from products where isDeleted = ? and quantity > ?
+	// select * from products where isDeleted = ? and quantity > ?
 	Page<Products> findByIsDeletedAndQuantityGreaterThan(Boolean isDeleted, Integer quantity, Pageable pageable);
 
-	//select * from products where productTypes = ? and slug <> ? and isDeleted = ? and quantity > ?
+	// select * from products where productTypes = ? and slug <> ? and isDeleted = ?
+	// and quantity > ?
 	List<Products> findByProductTypeAndSlugNotAndIsDeletedAndQuantityGreaterThan(ProductTypes productType, String slug,
 			Boolean isDeleted, Integer quantity);
 
-	//select * from products where categotyId = ? and isDeleted = ? and quantity > ?
+	// select * from products where categotyId = ? and isDeleted = ? and quantity >
+	// ?
 	List<Products> findByCategoryIdAndIsDeletedAndQuantityGreaterThan(Long categoryId, Boolean isDeleted,
 			Integer quantity);
 
 	// Phân trang
-	//select * from products where categoryId = ? and isDeleted = ? and quantity > ?
+	// select * from products where categoryId = ? and isDeleted = ? and quantity >
+	// ?
 	Page<Products> findByCategoryIdAndIsDeletedAndQuantityGreaterThan(Long categoryId, Boolean isDeleted,
 			Integer quantity, Pageable pageable);
 
@@ -56,4 +59,11 @@ public interface ProductsRepo extends JpaRepository<Products, Long> {
 	@Modifying(clearAutomatically = true)
 	@Query(value = "UPDATE products SET quantity = ? WHERE id = ?", nativeQuery = true)
 	void updateQuantity(Integer newQuantity, Long productId);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = "INSERT INTO products"
+			+ "([name], quantity, price, discount, imgName, [description], slug, categoryId, productTypeId) VALUES "
+			+ "(?, ?, ?, ?, ?, ?, ?, ?, ?)", nativeQuery = true)
+	void save(String name, Integer quantity, Double price, Integer discount, String imgName, String description,
+			String slug, Long categoryId, Long productTypeId);
 }

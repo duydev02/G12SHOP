@@ -90,6 +90,7 @@
 										<thead>
 											<tr>
 												<th></th>
+												<th>Id</th>
 												<th>Username</th>
 												<th>Fullname</th>
 												<th>Email</th>
@@ -101,6 +102,7 @@
 										<tbody>
 											<tr th:each="user, index : ${users}">
 												<td th:text="${index.index + 1}"></td>
+												<td th:text="${user.id}"></td>
 												<td th:text="${user.username}"></td>
 												<td th:text="${user.fullname}"></td>
 												<td th:text="${user.email}"></td>

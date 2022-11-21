@@ -18,7 +18,7 @@ public class ImageApi {
 	public ResponseEntity<ByteArrayResource> getUserImage(@PathVariable("photo") String photo) {
 		if (!photo.equals("") || photo != null) {
 			try {
-				Path filename = Paths.get("target/classes/static/user/img/user", photo);
+				Path filename = Paths.get("src/main/resources/static/user/img/user", photo);
 				byte[] buffer = Files.readAllBytes(filename);
 				ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
 				return ResponseEntity.ok().contentLength(buffer.length)
@@ -36,7 +36,7 @@ public class ImageApi {
 		if (!photo.equals("") || photo != null) {
 			if (photo.equals("default.png")) {
 				try {
-					Path filename = Paths.get("target/classes/static/user/img/product", photo);
+					Path filename = Paths.get("src/main/resources/static/user/img/product", photo);
 					byte[] buffer = Files.readAllBytes(filename);
 					ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
 					return ResponseEntity.ok().contentLength(buffer.length)
@@ -46,7 +46,7 @@ public class ImageApi {
 				}
 			} else {
 				try {
-					Path filename = Paths.get("target/classes/static/user/img/product", productId, photo);
+					Path filename = Paths.get("src/main/resources/static/user/img/product", productId, photo);
 					byte[] buffer = Files.readAllBytes(filename);
 					ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
 					return ResponseEntity.ok().contentLength(buffer.length)

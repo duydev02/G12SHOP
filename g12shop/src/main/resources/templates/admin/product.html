@@ -113,7 +113,7 @@
 												<td th:text="${product.productType.name}"></td>
 												<td th:text="${product.quantity}"></td>
 												<td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></td>
-												<td th:text="${product.discount}"></td>
+												<td th:text="${product.discount == 0 || product.discount == null ? '' : product.discount}"></td>
 												<td>
 													<img th:src="@{'/product-image/' + ${product.id} + '/' + ${product.imgName == null ? 'default.png' : product.imgName}}"
 														class="elevation-2" alt="Product image"
@@ -253,6 +253,7 @@
 													<!-- /.card-body -->
 												</div>
 												<!-- /.card -->
+												<p id="errorImage" style="color: #ff3333; margin-left: 20px;"></p>
 											</div>
 										</div>
 									</div>
@@ -333,7 +334,7 @@
 			reader = new FileReader();
 
 			reader.onload = function (e) {
-				$('#userImgUpload').attr('src', e.target.result);
+				$('#productImgUpload').attr('src', e.target.result);
 			};
 
 			reader.readAsDataURL(file);
@@ -424,8 +425,8 @@
 			if (price == null || price == "") {
 				$('#errorPrice').text('Price must not be null');
 				check = false;
-			} else if (price < 0 || price > 10000) {
-				$('#errorPrice').text('Price must be between 0 - 100000');
+			} else if (price < 1000 || price > 100000000) {
+				$('#errorPrice').text('Price must be between 0 - 100000000');
 				check = false;
 			} else {
 				$('#errorPrice').text('');
@@ -444,12 +445,34 @@
 			} else {
 				$('#errorSlug').text('');
 			}
+			// Check image
+			if ($('#inputFile').get(0).files.length === 0) {
+				$('#errorImage').text('Image must not be null');
+				check = false;
+			} else {
+				$('#errorImage').text('');
+			}
 			// << Check end
 			// Result
 			if (check) {
 				$('#form').submit();
 			}
 		});
+		
+		function editProduct(id) {
+			var url = '/admin/product/edit?id=' + id;
+			$.get(url).done(function (data) {
+				$('#form').replaceWith(data);
+				$('html, body').animate({
+					scrollTop: $('#form').offset().top
+				}, 1000);
+				$('#form :input').prop('readonly', false);
+				$('input#id').prop('readonly', true);
+				$("#categories, #productTypes").prop('disabled', false);
+				$('#submitUpdate').prop('disabled', false);
+				$('#form').prop('action', '/admin/product/edit/' + id);
+			});
+		}
 		
 		function cancel() {
 			location.reload();

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -34,9 +36,13 @@ public class Products implements Serializable {
 	private String name;
 	
 	@Column(name = "quantity")
+	@Min(value = 0)
+	@Max(value = 10000)
 	private Integer quantity;
 	
 	@Column(name = "price")
+	@Min(value = 1000)
+	@Max(value = 100000000)
 	private Double price;
 	
 	@Column(name = "imgName")
