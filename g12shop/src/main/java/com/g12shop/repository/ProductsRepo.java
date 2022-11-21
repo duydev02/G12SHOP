@@ -18,6 +18,10 @@ public interface ProductsRepo extends JpaRepository<Products, Long> {
 
 	Products findBySlug(String slug);
 
+	List<Products> findByIsDeleted(Boolean isDeleted);
+
+	Products findBySlugAndIdNot(String slug, Long id);
+
 	List<Products> findByDiscountGreaterThan(Integer discount);
 
 	// select * from products where categoryId = ? and discount > ?
@@ -57,13 +61,24 @@ public interface ProductsRepo extends JpaRepository<Products, Long> {
 	void deleteLogical(Long id);
 
 	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE products SET isDeleted = 0 WHERE id = ?", nativeQuery = true)
+	void recoveryLogical(Long id);
+
+	@Modifying(clearAutomatically = true)
 	@Query(value = "UPDATE products SET quantity = ? WHERE id = ?", nativeQuery = true)
 	void updateQuantity(Integer newQuantity, Long productId);
 
 	@Modifying(clearAutomatically = true)
-	@Query(value = "INSERT INTO products"
+	@Query(value = "INSERT INTO products "
 			+ "([name], quantity, price, discount, imgName, [description], slug, categoryId, productTypeId) VALUES "
 			+ "(?, ?, ?, ?, ?, ?, ?, ?, ?)", nativeQuery = true)
 	void save(String name, Integer quantity, Double price, Integer discount, String imgName, String description,
 			String slug, Long categoryId, Long productTypeId);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE products SET "
+			+ "[name] = ?, quantity = ?, price = ?, discount = ?, imgName = ?, [description] = ?, slug = ?, categoryId = ?, productTypeId = ? "
+			+ "WHERE id = ?", nativeQuery = true)
+	void update(String name, Integer quantity, Double price, Integer discount, String imgName, String description,
+			String slug, Long categoryId, Long productTypeId, Long id);
 }

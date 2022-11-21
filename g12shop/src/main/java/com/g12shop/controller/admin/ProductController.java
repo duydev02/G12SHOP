@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,17 +60,40 @@ public class ProductController {
 		return "admin/product";
 	}
 	
+	// Admin product - recovery
+	@GetMapping("/recovery")
+	public String doGetRecovery(Model model) {
+		model.addAttribute("isAdminProductPage", true);
+		model.addAttribute("isAdminProductPage3", true);
+		
+		List<Products> products = productsService.findByIsDeleted();
+		model.addAttribute("products", products);
+		return "admin/product-recovery";
+	}
+	
+	@GetMapping("/recovery/recovery")
+	public String doGetRecoveryTrue(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+		try {
+			productsService.recoveryLogical(id);
+			redirectAttributes.addFlashAttribute("succeedMessage", "Product " + id + " was recovered");
+		} catch (Exception e) {
+			e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "Cannot recovery product " + id);
+		}
+		return "redirect:/admin/product/recovery";
+	}
+
 	@GetMapping("/edit")
 	public String doGetEditProduct(@RequestParam("id") Long id, Model model) {
 		Products productRequest = productsService.findById(id);
 		model.addAttribute("productRequest", productRequest);
-		
+
 		List<Categories> categories = categoriesService.findAll();
 		model.addAttribute("categories", categories);
 
 		List<ProductTypes> productTypes = productTypesService.findAll();
 		model.addAttribute("productTypes", productTypes);
-		
+
 		Long categorySelected = productRequest.getCategory().getId();
 		Long productTypeSelected = productRequest.getProductType().getId();
 		model.addAttribute("categorySelected", categorySelected);
@@ -100,6 +124,7 @@ public class ProductController {
 		} else {
 			try {
 				String imageHashName = "";
+				Boolean isImageAdded = false;
 				if (!attach.isEmpty()) {
 					Path path = Paths.get("src/main/resources/static/user/img/product");
 
@@ -111,17 +136,20 @@ public class ProductController {
 					imageHashName = Integer.toHexString(s.hashCode()) + s.substring(s.lastIndexOf("."));
 					Files.copy(inputStream, path.resolve(imageHashName), StandardCopyOption.REPLACE_EXISTING);
 					productRequest.setImgName(imageHashName);
+					isImageAdded = true;
 				}
 				productsService.save(productRequest, categoryId, productTypeId);
 				Long productId = productsService.findBySlug(productRequest.getSlug()).getId();
-				// Tao thu muc anh cua product
-				Path pathAfter = Paths.get("src/main/resources/static/user/img/product", productId.toString());
-				if (!Files.exists(pathAfter)) {
-					Files.createDirectories(pathAfter);
+				if (isImageAdded) {
+					// Tao thu muc anh cua product
+					Path pathAfter = Paths.get("src/main/resources/static/user/img/product", productId.toString());
+					if (!Files.exists(pathAfter)) {
+						Files.createDirectories(pathAfter);
+					}
+					Files.move(Paths.get("src/main/resources/static/user/img/product", imageHashName), Paths
+							.get("src/main/resources/static/user/img/product", productId.toString(), imageHashName),
+							StandardCopyOption.REPLACE_EXISTING);
 				}
-				Files.move(Paths.get("src/main/resources/static/user/img/product", imageHashName),
-						Paths.get("src/main/resources/static/user/img/product", productId.toString(), imageHashName),
-						StandardCopyOption.REPLACE_EXISTING);
 				redirectAttributes.addFlashAttribute("succeedMessage",
 						"Product " + productRequest.getName() + " has been created successfully");
 			} catch (Exception e) {
@@ -129,6 +157,59 @@ public class ProductController {
 				redirectAttributes.addFlashAttribute("succeedMessage",
 						"Cannot create product: " + productRequest.getName() + ". " + e.getMessage());
 			}
+		}
+		return "redirect:/admin/product";
+	}
+
+	@PostMapping("/edit/{id}")
+	public String doPostEditProduct(@Valid @ModelAttribute("productRequest") Products productRequest,
+			BindingResult bindingResult, RedirectAttributes redirectAttributes,
+			@RequestParam("categories") Long categoryId, @RequestParam("productTypes") Long productTypeId,
+			@RequestParam("attach") MultipartFile attach, @PathVariable("id") Long id) {
+		Products checkProduct = productsService.findById(id);
+		if (checkProduct != null) {
+			if (bindingResult.hasErrors()) {
+				redirectAttributes.addFlashAttribute("errorMessage", "Product is not valid");
+			} else {
+				try {
+					String imageHashName = "";
+					Boolean isImageAdded = false;
+					if (!attach.isEmpty()) {
+						Path path = Paths.get("src/main/resources/static/user/img/product");
+
+						if (!Files.exists(path)) {
+							Files.createDirectories(path);
+						}
+						InputStream inputStream = attach.getInputStream();
+						String s = System.currentTimeMillis() + attach.getOriginalFilename();
+						imageHashName = Integer.toHexString(s.hashCode()) + s.substring(s.lastIndexOf("."));
+						Files.copy(inputStream, path.resolve(imageHashName), StandardCopyOption.REPLACE_EXISTING);
+						productRequest.setImgName(imageHashName);
+						isImageAdded = true;
+					} else {
+						productRequest.setImgName(checkProduct.getImgName());
+					}
+					productsService.update(productRequest, categoryId, productTypeId);
+					if (isImageAdded) {
+						// Tao thu muc anh cua product
+						Path pathAfter = Paths.get("src/main/resources/static/user/img/product", id.toString());
+						if (!Files.exists(pathAfter)) {
+							Files.createDirectories(pathAfter);
+						}
+						Files.move(Paths.get("src/main/resources/static/user/img/product", imageHashName),
+								Paths.get("src/main/resources/static/user/img/product", id.toString(), imageHashName),
+								StandardCopyOption.REPLACE_EXISTING);
+					}
+					redirectAttributes.addFlashAttribute("succeedMessage",
+							"Product " + productRequest.getName() + " has been edited successfully");
+				} catch (Exception e) {
+					e.printStackTrace();
+					redirectAttributes.addFlashAttribute("succeedMessage",
+							"Cannot edit product: " + productRequest.getName());
+				}
+			}
+		} else {
+			redirectAttributes.addFlashAttribute("errorMessage", "Cannot found product has id: " + id);
 		}
 		return "redirect:/admin/product";
 	}

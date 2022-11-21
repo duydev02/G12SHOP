@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Khôi phục người dùng - G12ADMIN</title>
+    <title>Khôi phục sản phẩm - G12ADMIN</title>
 
     <!-- Favicon  -->
 	<link rel="shortcut icon" type="image/x-icon" th:href="@{/user/img/favicon.ico}">
@@ -61,13 +61,13 @@
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-sm-6">
-							<h1>Khôi phục người dùng</h1>
+							<h1>Khôi phục sản phẩm</h1>
 						</div>
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-right">
 								<li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li>
-								<li class="breadcrumb-item"><a th:href="@{/admin/user}">Người dùng</a></li>
-								<li class="breadcrumb-item active">Khôi phục người dùng</li>
+								<li class="breadcrumb-item"><a th:href="@{/admin/product}">Sản phẩm</a></li>
+								<li class="breadcrumb-item active">Khôi phục sản phẩm</li>
 							</ol>
 						</div>
 					</div>
@@ -82,7 +82,7 @@
 						<div class="col-12">
 							<div class="card">
 								<div class="card-header">
-									<h3 class="card-title" style="font-size: 24px">Danh sách người dùng đã xóa</h3>
+									<h3 class="card-title" style="font-size: 24px">Danh sách sản phẩm đã xóa</h3>
 								</div>
 								<!-- /.card-header -->
 								<div class="card-body">
@@ -91,30 +91,36 @@
 											<tr>
 												<th></th>
 												<th>Id</th>
-												<th>Username</th>
-												<th>Fullname</th>
-												<th>Email</th>
-												<th style="width: 80px;">Avatar</th>
-												<th>Role</th>
+												<th>Name</th>
+												<th>Province</th>
+												<th>Type</th>
+												<th>Quantity</th>
+												<th>Price</th>
+												<th>Discount</th>
+												<th style="width: 80px;">Image</th>
+												<th>Slug</th>
 												<th>Action</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr th:each="user, index : ${users}">
+											<tr th:each="product, index : ${products}">
 												<td th:text="${index.index + 1}"></td>
-												<td th:text="${user.id}"></td>
-												<td th:text="${user.username}"></td>
-												<td th:text="${user.fullname}"></td>
-												<td th:text="${user.email}"></td>
+												<td th:text="${product.id}"></td>
+												<td th:text="${product.name}"></td>
+												<td th:text="${product.category.name}"></td>
+												<td th:text="${product.productType.name}"></td>
+												<td th:text="${product.quantity}"></td>
+												<td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></td>
+												<td th:text="${product.discount == 0 || product.discount == null ? '' : product.discount}"></td>
 												<td>
-													<img th:src="@{'/user-image/' + ${user.imgUrl == null || user.imgUrl == '' ? 'default.png' : user.imgUrl}}"
-														class="elevation-2" alt="User image"
+													<img th:src="@{'/product-image/' + ${product.id} + '/' + ${product.imgName == null ? 'default.png' : product.imgName}}"
+														class="elevation-2" alt="Product image"
 														style="width: 50px; height: 50px">
 												</td>
-												<td th:text="${user.role.name}"></td>
+												<td th:text="${product.slug}"></td>
 												<td align="center">
 													<button class="btn btn-success"
-														th:attr="onclick='recoveryUser(\'' + ${user.username} + '\')'">
+														th:attr="onclick='recoveryProduct(\'' + ${product.id} + '\')'">
 														<i class="fa fa-undo" aria-hidden="true"></i>
 													</button>
 												</td>
@@ -129,7 +135,7 @@
 						<!-- /.col -->
 					</div>
 					<!-- /.row -->
-					
+
 				</div>
 				<!-- /.container-fluid -->
 			</section>
@@ -168,10 +174,8 @@
 	<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
 	<!-- AdminLTE for demo purposes -->
 	<script th:src="@{/admin/dist/js/demo.js}"></script>
-	<!-- Page specific script -->
     <script th:inline="javascript">
-	
-		// Tim kiem, phan trang, xuat file va print cho bang user
+	 	// Tim kiem, phan trang, xuat file va print cho bang user
 		$(document).ready(function () {
 			$("#example1").DataTable({
 				"pageLength": 5,
@@ -183,7 +187,25 @@
 				'#example1_wrapper .col-md-6:eq(0)'
 			);
 		});
-	
+	 	
+		// Hien thi anh khi chon file anh khac
+	    $(document).on('input', function () {
+			$('#inputFile').change(function () {
+				showImageThumbnail(this);
+			});
+		});
+
+		function showImageThumbnail(fileInput) {
+			file = fileInput.files[0];
+			reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#productImgUpload').attr('src', e.target.result);
+			};
+
+			reader.readAsDataURL(file);
+		};
+		
 		// Lua chon thong bao thanh cong hay that bai, dat thoi gian bao lau se bien mat
 		$(document).ready(function () {
 			var errorMessage = $('#errorMessage').text();
@@ -205,12 +227,12 @@
 		});
 		
 		// Recovery
-		function recoveryUser(username) {
-			if (confirm("Bạn có muốn khôi phục tài khoản có username: " + username)) {
-				window.location.href = '/admin/user/recovery/recovery?username=' + username;
+		function recoveryProduct(id) {
+			if (confirm("Bạn có muốn khôi phục sản phẩm có id: " + id)) {
+				window.location.href = '/admin/product/recovery/recovery?id=' + id;
 			}
 		}
-
+		
     </script>
 </body>
 

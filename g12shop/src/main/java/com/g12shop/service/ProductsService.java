@@ -13,6 +13,8 @@ public interface ProductsService {
 
 	Products findBySlug(String slug);
 
+	List<Products> findByIsDeleted();
+
 	List<Products> findByDiscount();
 
 	List<Products> findByCategoryIdAndDiscount(Long categoryId);
@@ -35,5 +37,9 @@ public interface ProductsService {
 
 	void deleteLogical(Long id);
 
+	void recoveryLogical(Long id);
+
 	void save(Products productRequest, Long categoryId, Long productTypeId) throws Exception;
+
+	void update(Products productRequest, Long categoryId, Long productTypeId) throws Exception;
 }

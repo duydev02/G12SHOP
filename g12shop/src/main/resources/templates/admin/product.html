@@ -474,6 +474,80 @@
 			});
 		}
 		
+		function submitFormEdit() {
+			var name = $('#name').val();
+			var category = $('#categories').val();
+			var productType = $('#productTypes').val();
+			var quantity = $('#quantity').val();
+			var price = $('#price').val();
+			var slug = $('#slug').val();
+			var check = true;
+			// >> Check begin
+			// Check name
+			if (name.length == 0) {
+				$('#errorName').text('Name must not be blank');
+				check = false;
+			} else if (name.length < 3 || name.length > 255) {
+				$('#errorName').text('Name must be greater than 3 and less than 255 characters');
+				check = false;
+			} else {
+				$('#errorName').text('');
+			}
+			// Check category
+			if (category == 0) {
+				$('#errorCategories').text('Please choose province');
+				check = false;
+			} else {
+				$('#errorCategories').text('');
+			}
+			// Check productType
+			if (productType == 0) {
+				$('#errorProductTypes').text('Please choose product type');
+				check = false;
+			} else {
+				$('#errorProductTypes').text('');
+			}
+			// Check quantity
+			if (quantity == null || quantity == "") {
+				$('#errorQuantity').text('Quantity must not be null');
+				check = false;
+			} else if (quantity < 0 || quantity > 10000) {
+				$('#errorQuantity').text('Quantity must be between 0 - 10000');
+				check = false;
+			} else {
+				$('#errorQuantity').text('');
+			}
+			// Check price
+			if (price == null || price == "") {
+				$('#errorPrice').text('Price must not be null');
+				check = false;
+			} else if (price < 1000 || price > 100000000) {
+				$('#errorPrice').text('Price must be between 0 - 100000000');
+				check = false;
+			} else {
+				$('#errorPrice').text('');
+			}
+			// Check slug
+			var slugCheck = /^[a-z0-9-]+$/;
+			if (slug.length == 0) {
+				$('#errorSlug').text('Slug must not be blank');
+				check = false;
+			} else if (slug.length < 3 || slug.length > 255) {
+				$('#errorSlug').text('Slug must be greater than 3 and less than 255 characters');
+				check = false;
+			} else if (!slugCheck.test(slug)) {
+				$('#errorSlug').text('Slug must be lowercase, include the characters a-z 0-9 and -');
+				check = false;
+			} else {
+				$('#errorSlug').text('');
+			}
+			// << Check end
+			// Result
+			if (check) {
+				$('#form').submit();
+			}
+		}
+		
 		function cancel() {
 			location.reload();
 		}

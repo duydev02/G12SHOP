@@ -33,6 +33,11 @@ public class ProductsServiceImpl implements ProductsService {
 	}
 
 	@Override
+	public List<Products> findByIsDeleted() {
+		return repo.findByIsDeleted(Boolean.TRUE);
+	}
+
+	@Override
 	public List<Products> findByDiscount() {
 		return repo.findByDiscountGreaterThan(0);
 	}
@@ -99,6 +104,12 @@ public class ProductsServiceImpl implements ProductsService {
 	}
 
 	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void recoveryLogical(Long id) {
+		repo.recoveryLogical(id);
+	}
+
+	@Override
 	public void updateQuantity(Integer newQuantity, Long productId) {
 		repo.updateQuantity(newQuantity, productId);
 	}
@@ -127,8 +138,37 @@ public class ProductsServiceImpl implements ProductsService {
 		repo.save(name, quantity, price, discount, imgName, description, slug, categoryId, productTypeId);
 	}
 
+	@Override
+	@Transactional(rollbackOn = { Exception.class, Throwable.class })
+	public void update(Products productRequest, Long categoryId, Long productTypeId) throws Exception {
+		if (existsProductSlugAndIdNot(productRequest.getSlug(), productRequest.getId())) {
+			throw new Exception("Slug already exists!");
+		}
+		String name = productRequest.getName();
+		Integer quantity = productRequest.getQuantity();
+		Double price = productRequest.getPrice();
+		Integer discount = 0;
+		if (productRequest.getDiscount() != null) {
+			discount = productRequest.getDiscount();
+		}
+		String imgName = productRequest.getImgName();
+		String description = "";
+		if (productRequest.getDescription() != null) {
+			description = productRequest.getDescription();
+		}
+		String slug = productRequest.getSlug();
+		// categoryId
+		// productTypeId
+		Long id = productRequest.getId();
+		repo.update(name, quantity, price, discount, imgName, description, slug, categoryId, productTypeId, id);
+	}
+
 	private Boolean existsProductSlug(String slug) {
 		return repo.findBySlug(slug) != null ? true : false;
+	}
+	
+	private Boolean existsProductSlugAndIdNot(String slug, Long id) {
+		return repo.findBySlugAndIdNot(slug, id) != null ? true : false;
 	}
 
 }
