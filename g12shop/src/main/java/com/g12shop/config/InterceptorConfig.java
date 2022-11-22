@@ -6,15 +6,24 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.g12shop.interceptor.GlobalInterceptor;
+import com.g12shop.interceptor.MyInterceptor;
 
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer{
-	@Autowired private GlobalInterceptor globalInterceptor;
+	
+	@Autowired
+	private GlobalInterceptor globalInterceptor;
+	
+	@Autowired
+	private MyInterceptor interceptor;
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(globalInterceptor)
-			.addPathPatterns("/*", "/shop-details/*", "/shop-grid/*")
-			.excludePathPatterns("/rest/**", "/admin/**", "/user/**");
+			.addPathPatterns("/index", "/shop-details/*", "/shop-grid/**", "/about", "/contact", "/cart");
+//			.excludePathPatterns("/rest/**", "/admin/**", "/user/**");
+		
+		registry.addInterceptor(interceptor)
+			.addPathPatterns("/admin/**", "/cart");
 	}
 }

@@ -12,6 +12,7 @@ import com.g12shop.service.CategoriesService;
 
 @Component
 public class GlobalInterceptor implements HandlerInterceptor{
+	
 	@Autowired 
 	private CategoriesService categoriesService;
 	
