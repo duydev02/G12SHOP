@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý đơn hàng - G12ADMIN</title>
+
+    <!-- Favicon  -->
+	<link rel="shortcut icon" type="image/x-icon" th:href="@{/user/img/favicon.ico}">
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/admin/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/admin/plugins/summernote/summernote-bs4.min.css}">
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" th:src="@{/admin/dist/img/AdminLTELogo.png}" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        <!-- Main Sidebar Container -->
+        <th:block th:include="admin/fragments/aside"></th:block>
+
+		<!-- Notify Error -->
+		<div id="divThongBao">
+			<div id="thongBao" style="display: none;" role="alert" align="center">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span id="errorMessage" th:text="${errorMessage}"></span>
+				<span id="succeedMessage" th:text="${succeedMessage}"></span>
+			</div>
+		</div>
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1>Quản lý đơn hàng</h1>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li>
+								<li class="breadcrumb-item"><a th:href="@{/admin/order}">Đơn hàng</a></li>
+								<li class="breadcrumb-item active">Quản lý đơn hàng</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title" style="font-size: 24px">Danh sách đơn hàng</h3>
+								</div>
+								<!-- /.card-header -->
+								<div class="card-body">
+									<table id="example1" class="table table-bordered table-striped">
+										<thead>
+											<tr>
+												<th></th>
+												<th>Id</th>
+												<th>Username</th>
+												<th>Address</th>
+												<th>Phone</th>
+												<th>Shipping Fee</th>
+												<th>Total Price</th>
+												<th>Created Date</th>
+												<th>Order Status</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="order, index : ${orders}">
+												<td th:text="${index.index + 1}"></td>
+												<td th:text="${order.id}"></td>
+												<td th:text="${order.user.username}"></td>
+												<td th:text="${order.address}"></td>
+												<td th:text="${order.phone}"></td>
+												<td th:text="${order.shippingFee}"></td>
+												<td th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></td>
+												<td th:text="${order.createdDate}"></td>
+												<td th:text="${order.orderStatus.displayValue}"></td>
+												<td align="center">
+													<button class="btn btn-success"
+														th:attr="onclick='editOrder(\'' + ${order.id} + '\')'">
+														<i class="fa fa-edit" aria-hidden="true"></i>
+													</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- /.card-body -->
+							</div>
+							<!-- /.card -->
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+					
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+		
+        <th:block th:include="admin/fragments/footer"></th:block>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+	<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+	<!-- Bootstrap 4 -->
+	<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<!-- DataTables  & Plugins -->
+	<script th:src="@{/admin/plugins/datatables/jquery.dataTables.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+	<script th:src="@{/admin/plugins/jszip/jszip.min.js}"></script>
+	<script th:src="@{/admin/plugins/pdfmake/pdfmake.min.js}"></script>
+	<script th:src="@{/admin/plugins/pdfmake/vfs_fonts.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+	<script th:src="@{/admin/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+	<!-- AdminLTE App -->
+	<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+	<!-- AdminLTE for demo purposes -->
+	<script th:src="@{/admin/dist/js/demo.js}"></script>
+    <script th:inline="javascript">
+	 	// Tim kiem, phan trang, xuat file va print cho bang user
+		$(document).ready(function () {
+			$("#example1").DataTable({
+				"pageLength": 5,
+				"responsive": true,
+				"lengthChange": false,
+				"autoWidth": false,
+				"buttons": ["csv", "excel", "pdf", "print"]
+			}).buttons().container().appendTo(
+				'#example1_wrapper .col-md-6:eq(0)'
+			);
+		});
+    </script>
+</body>
+
+</html>
