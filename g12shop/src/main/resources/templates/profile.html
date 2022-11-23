@@ -21,20 +21,36 @@
     <nav class="nav nav-borders">
         <a class="nav-link active ms-0" th:href="|/profile/${session.currentUser.username}|">Hồ sơ</a>
         <a class="nav-link" th:href="|/security/${session.currentUser.username}|">Bảo mật</a>
+        <a class="nav-link" th:href="|/my-order/${session.currentUser.username}|">Đơn hàng</a>
     </nav>
     <hr class="mt-0 mb-4">
+    <form th:object="${userRequest}" action="/profile/change" method="post" enctype="multipart/form-data">
     <div class="row">
-        <div class="col-xl-4">
+    	<div class="col-xl-4">
             <!-- Profile picture card-->
             <div class="card mb-4 mb-xl-0">
                 <div class="card-header">Ảnh hồ sơ</div>
                 <div class="card-body text-center">
                     <!-- Profile picture image-->
-                    <img class="img-account-profile rounded-circle mb-2" th:src="|/user-image/${session.currentUser.imgUrl}|" alt="">
+                    <img id="userImgUpload" class="img-account-profile rounded-circle mb-2" th:src="|/user-image/${session.currentUser.imgUrl}|" alt="">
+                    <br />
+                    <div class="form-group text-start">
+                        <label for="inputFile" class="fw-bold">Avatar</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputFile" name="attach"
+                                    accept="image/png, image/jpeg">
+                                <label class="custom-file-label" for="inputFile" style="text-align: left;">Choose image</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Upload</span>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Profile picture help block-->
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <!-- Profile picture upload button-->
-                    <button class="btn btn-primary" type="button">Upload new image</button>
+                    <!-- <button class="btn btn-primary" type="button">Upload new image</button> -->
                 </div>
             </div>
         </div>
@@ -43,7 +59,7 @@
             <div class="card mb-4">
                 <div class="card-header">Thông tin tài khoản</div>
 	                <div class="card-body">
-	                    <form th:object="${userRequest}">
+	                    
 	                    	<!-- Form Row-->
 	                        <div class="row gx-3 mb-3">
 	                        	<!-- Form Group (username)-->
@@ -57,13 +73,13 @@
 	                        <div class="mb-3">
 	                            <label class="small mb-1" for="inputFirstName">Full name (how your name will appear to other users on the site)</label>
                                 <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your full name" value="Valerie"
-                                	th:field="*{fullname}">
+                                	name="fullname" th:field="*{fullname}">
 	                        </div>
 	                        <!-- Form Group (email address)-->
 	                        <div class="mb-3">
 	                            <label class="small mb-1" for="inputEmailAddress">Email address</label>
 	                            <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="name@example.com"
-	                            	th:field="*{email}">
+	                            	name="email" th:field="*{email}">
 	                        </div>
 	                        <!-- Form Row-->
 	                        <div class="row gx-3 mb-3">
@@ -75,12 +91,12 @@
 	                            </div>
 	                        </div>
 	                        <!-- Save changes button-->
-	                        <button class="btn btn-primary" type="button">Save changes</button>
-	                    </form>
+	                        <button class="btn btn-primary" type="submit">Save changes</button>
 	                </div>
             	</div>
         	</div>
     	</div>
+        </form>
 	</div>
 
 	<th:block th:include="@{/fragments/footer}"></th:block>
@@ -93,6 +109,25 @@
     <script th:src="@{/user/js/mixitup.min.js}"></script>
     <script th:src="@{/user/js/owl.carousel.min.js}"></script>
     <script th:src="@{/user/js/main.js}"></script>
+    <script>
+	 	// Hien thi anh khi chon file anh khac
+	    $(document).on('input', function () {
+			$('#inputFile').change(function () {
+				showImageThumbnail(this);
+			});
+		});
+	
+		function showImageThumbnail(fileInput) {
+			file = fileInput.files[0];
+			reader = new FileReader();
+	
+			reader.onload = function (e) {
+				$('#userImgUpload').attr('src', e.target.result);
+			};
+	
+			reader.readAsDataURL(file);
+		};
+    </script>
 </body>
 
 </html>

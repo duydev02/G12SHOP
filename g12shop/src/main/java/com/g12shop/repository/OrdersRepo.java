@@ -3,15 +3,19 @@ package com.g12shop.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.g12shop.entity.OrderStatuses;
 import com.g12shop.entity.Orders;
 
 @Repository
 public interface OrdersRepo extends JpaRepository<Orders, Long> {
 
 	List<Orders> findByUserId(Long userId);
+
+	List<Orders> findByOrderStatus(OrderStatuses orderStatus);
 
 	@Query(value = "SELECT * FROM orders ORDER BY CASE "
 			+ "WHEN orderStatus = 'CHUA_XAC_NHAN' then 1 "
@@ -20,4 +24,10 @@ public interface OrdersRepo extends JpaRepository<Orders, Long> {
 			+ "WHEN orderStatus = 'DA_GIAO_HANG' then 4 "
 			+ "END ASC", nativeQuery = true)
 	List<Orders> findByOrderStatusCustom();
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = "UPDATE orders SET orderStatus = ?2 WHERE id = ?1", nativeQuery = true)
+	void updateOrderStatus(Long id, String orderStatus);
+
+	List<Orders> findByOrderByCreatedDateDesc();
 }

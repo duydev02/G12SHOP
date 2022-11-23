@@ -54,4 +54,6 @@ public interface UsersService {
 	void deleteLogical(String username);
 
 	void recoveryLogical(String username);
+
+	void change(Users user, String fullname, String email, String newImage);
 }

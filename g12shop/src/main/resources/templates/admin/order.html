@@ -150,16 +150,19 @@
 										<div class="col-6" style="font-size: 20px; color: navy; display: inline-block; padding-left: 14px;" th:text="${'Điện thoại: ' + order.phone}"></div>
 										<div class="col-6" style="font-size: 22px; color: red; display: inline-block;" th:text="${'Tổng giá trị đơn hàng: ' + #numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
 									</div>
-									<div class="col-6 mb-4">
-										<label for="orderStatus" class="form-label">Trạng thái đơn hàng</label>
-										<select class="form-control" name="" id="orderStatus">
-											<option th:each="orderStatus : ${T(com.g12shop.entity.OrderStatuses).values()}"
-												th:value="${orderStatus}" th:text="${orderStatus.displayValue}"
-												th:selected="${orderStatus == order.orderStatus.values()}">
-											</option>
-										</select>
-									</div>
-									<button class="btn btn-success" th:attr="onclick='editOrderStatus(\'' + ${order.id} + '\')'">Cập nhật trạng thái</button>
+									
+										<div class="col-6 mb-4">
+											<label for="orderStatus" class="form-label">Trạng thái đơn hàng</label>
+											<select class="form-control" name="orderStatus" id="orderStatus">
+												<option th:each="orderStatus : ${T(com.g12shop.entity.OrderStatuses).values()}"
+													th:value="${orderStatus}" th:text="${orderStatus.displayValue}"
+													th:selected="${#strings.toString(orderStatus) == #strings.toString(order.orderStatus)}">
+												</option>
+											</select>
+										</div>
+										<!-- <input type="hidden" name="id"/> -->
+										<button class="btn btn-success" th:attr="onclick='editOrderStatus(\'' + ${order.id} + '\')'">Cập nhật trạng thái</button>
+									
 								</div>
 								<!-- /.card-header -->
 								<!-- form start -->
@@ -249,8 +252,16 @@
 		}
 		
 		function editOrderStatus(id) {
-			
-			alert(id + ' ' + $('#orderStatus').val())
+			var orderStatus = $('#orderStatus').val();
+			var url = '/admin/order/orderStatus?id=' + id + '&orderStatus=' + orderStatus;
+			$.get(url)
+			.done(function () {
+				window.location.reload();
+			})
+			.fail(function(response) {
+			    console.log('Error: ' + response.responseText);
+			    alert('Cập nhật trạng thái đơn hàng thất bại!');
+			});
 		}
     </script>
 </body>

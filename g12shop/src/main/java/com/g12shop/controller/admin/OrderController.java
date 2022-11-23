@@ -39,9 +39,14 @@ public class OrderController {
 		List<com.g12shop.entity.OrderDetails> orderDetails = orderDetailsService.findByOrderId(id);
 		Orders order = ordersService.findById(id);
 		model.addAttribute("order", order);
-		System.out.println(order.getOrderStatus());
-		model.addAttribute("orderStatusSelected", order.getOrderStatus());
+		model.addAttribute("orderStatusSelected", order.getOrderStatus().toString());
 		model.addAttribute("orderDetails", orderDetails);
 		return "admin/order::#table-order-details";
+	}
+	
+	@GetMapping("/orderStatus")
+	public String doPostOrderStatus(@RequestParam("id") Long id, @RequestParam("orderStatus") String orderStatus, Model model) {
+		ordersService.updateOrderStatus(id, orderStatus);
+		return "forward:/admin/order";
 	}
 }

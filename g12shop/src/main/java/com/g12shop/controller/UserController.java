@@ -1,6 +1,12 @@
 package com.g12shop.controller;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +23,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.g12shop.config.EncoderConfig;
 import com.g12shop.constant.SessionConstant;
+import com.g12shop.entity.OrderStatuses;
+import com.g12shop.entity.Orders;
 import com.g12shop.entity.Users;
+import com.g12shop.service.OrderDetailsService;
+import com.g12shop.service.OrdersService;
+import com.g12shop.service.SessionService;
 import com.g12shop.service.UsersService;
 import com.g12shop.util.SessionUtil;
 import com.g12shop.util.UserNotFoundExcepion;
@@ -36,6 +48,15 @@ public class UserController {
 
 	@Autowired
 	private EncoderConfig encoderConfig;
+	
+	@Autowired
+	private SessionService sessionService;
+	
+	@Autowired
+	private OrdersService ordersService;
+	
+	@Autowired
+	private OrderDetailsService orderDetailsService;
 
 	@GetMapping("/login")
 	public String doGetLogin(Model model) {
@@ -87,7 +108,7 @@ public class UserController {
 	@GetMapping("/profile/{username}")
 	public String doGetProfile(@PathVariable("username") String username, HttpSession session, Model model) {
 		Users user = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
-		if (!username.equals(user.getUsername())) {
+		if (user == null || username == null || !username.equals(user.getUsername())) {
 			return "redirect:/index";
 		}
 		model.addAttribute("userRequest", user);
@@ -97,10 +118,44 @@ public class UserController {
 	@GetMapping("/security/{username}")
 	public String doGetSecurity(@PathVariable("username") String username, HttpSession session) {
 		Users user = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
-		if (!username.equals(user.getUsername())) {
+		if (user == null || username == null || !username.equals(user.getUsername())) {
 			return "redirect:/index";
 		}
 		return "security";
+	}
+	
+	@GetMapping("/my-order/{username}")
+	public String doGetOrder(@PathVariable("username") String username, HttpSession session, Model model) {
+		Users user = (Users) session.getAttribute(SessionConstant.CURRENT_USER);
+		if (user == null || username == null || !username.equals(user.getUsername())) {
+			return "redirect:/index";
+		}
+		// All
+		List<Orders> orders = ordersService.findByOrderByCreatedDateDesc();
+		model.addAttribute("orders", orders);
+		// CHUA_XAC_NHAN
+		List<Orders> ordersChuaXN = ordersService.findByOrderStatus(OrderStatuses.CHUA_XAC_NHAN);
+		model.addAttribute("ordersChuaXN", ordersChuaXN);
+		// DA_XAC_NHAN
+		List<Orders> ordersDaXN = ordersService.findByOrderStatus(OrderStatuses.DA_XAC_NHAN);
+		model.addAttribute("ordersDaXN", ordersDaXN);
+		// DANG_GIAO_HANG
+		List<Orders> ordersDangGH = ordersService.findByOrderStatus(OrderStatuses.DANG_GIAO_HANG);
+		model.addAttribute("ordersDangGH", ordersDangGH);
+		// DA_GIAO_HANG
+		List<Orders> ordersDaGH = ordersService.findByOrderStatus(OrderStatuses.DA_GIAO_HANG);
+		model.addAttribute("ordersDaGH", ordersDaGH);
+		
+		return "profile-order";
+	}
+	
+	@GetMapping("/my-order/orderdetails")
+	public String doGetOrderDetails(@RequestParam("id") Long id, Model model) {
+		List<com.g12shop.entity.OrderDetails> orderDetails = orderDetailsService.findByOrderId(id);
+		Orders order = ordersService.findById(id);
+		model.addAttribute("order", order);
+		model.addAttribute("orderDetails", orderDetails);
+		return "profile-order::#table-order-details";
 	}
 
 	@PostMapping("/login")
@@ -199,5 +254,34 @@ public class UserController {
 			ra.addFlashAttribute("message", "You have successfully changed your password, please login");
 			return "redirect:/login";
 		}
+	}
+	
+	@PostMapping("/profile/change")
+	public String doPostChange(@ModelAttribute("userRequest") Users userRequest, RedirectAttributes redirectAttributes,
+			@RequestParam("attach") MultipartFile attach) {
+		Users currenUser = sessionService.get("currentUser");
+		String fullname = userRequest.getFullname();
+		String email = userRequest.getEmail();
+		try {
+			String newImage = currenUser.getImgUrl();
+			if (!attach.isEmpty()) {
+				Path path = Paths.get("src/main/resources/static/user/img/user");
+
+				if (!Files.exists(path)) {
+					Files.createDirectories(path);
+				}
+				InputStream inputStream = attach.getInputStream();
+				String s = System.currentTimeMillis() + attach.getOriginalFilename();
+				String imageHashName = Integer.toHexString(s.hashCode()) + s.substring(s.lastIndexOf("."));
+				Files.copy(inputStream, path.resolve(imageHashName),
+						StandardCopyOption.REPLACE_EXISTING);
+				newImage = imageHashName;
+			}
+			usersService.change(currenUser, fullname, email, newImage);
+			redirectAttributes.addFlashAttribute("succeedMessage", "Change profile successfully!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("succeedMessage", "Change profile error!");
+		}
+		return "redirect:/profile/" + currenUser.getUsername();
 	}
 }

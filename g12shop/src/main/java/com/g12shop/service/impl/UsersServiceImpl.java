@@ -256,4 +256,12 @@ public class UsersServiceImpl implements UsersService {
 	private Boolean existsEmail(String email) {
 		return repo.findByEmail(email) != null ? true : false;
 	}
+
+	@Override
+	public void change(Users user, String fullname, String email, String newImage) {
+		user.setFullname(fullname);
+		user.setEmail(email);
+		user.setImgUrl(newImage);
+		repo.save(user);
+	}
 }

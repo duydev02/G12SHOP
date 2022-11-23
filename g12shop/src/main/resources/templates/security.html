@@ -20,7 +20,8 @@
         <!-- Account page navigation-->
         <nav class="nav nav-borders">
         <a class="nav-link ms-0" th:href="|/profile/${session.currentUser.username}|">Hồ sơ</a>
-        <a class="nav-link active" th:href="|/profile/${session.currentUser.username}|">Bảo mật</a>
+        <a class="nav-link active" th:href="|/security/${session.currentUser.username}|">Bảo mật</a>
+        <a class="nav-link" th:href="|/my-order/${session.currentUser.username}|">Đơn hàng</a>
         </nav>
         <hr class="mt-0 mb-4">
         <div class="row">
