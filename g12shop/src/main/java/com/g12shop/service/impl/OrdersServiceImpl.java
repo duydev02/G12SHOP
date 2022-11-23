@@ -21,6 +21,12 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
+	public Orders findById(Long id) {
+		return repo.findById(id).get();
+	}
+
+
+	@Override
 	public List<Orders> findByOrderStatus() {
 		return repo.findByOrderStatusCustom();
 	}
@@ -29,5 +35,4 @@ public class OrdersServiceImpl implements OrdersService {
 	public Orders insert(Orders order) {
 		return repo.saveAndFlush(order);
 	}
-
 }

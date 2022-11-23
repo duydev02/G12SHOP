@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.g12shop.entity.Orders;
+import com.g12shop.service.OrderDetailsService;
 import com.g12shop.service.OrdersService;
 
 @Controller(value = "OrderControllerOfAdmin")
@@ -17,6 +19,9 @@ public class OrderController {
 	
 	@Autowired
 	private OrdersService ordersService;
+	
+	@Autowired
+	private OrderDetailsService orderDetailsService;
 
 	@GetMapping("")
 	public String doGetIndex(Model model) {
@@ -27,5 +32,16 @@ public class OrderController {
 		model.addAttribute("orders", orders);
 
 		return "admin/order";
+	}
+	
+	@GetMapping("/orderdetails")
+	public String doGetOrderDetails(@RequestParam("id") Long id, Model model) {
+		List<com.g12shop.entity.OrderDetails> orderDetails = orderDetailsService.findByOrderId(id);
+		Orders order = ordersService.findById(id);
+		model.addAttribute("order", order);
+		System.out.println(order.getOrderStatus());
+		model.addAttribute("orderStatusSelected", order.getOrderStatus());
+		model.addAttribute("orderDetails", orderDetails);
+		return "admin/order::#table-order-details";
 	}
 }

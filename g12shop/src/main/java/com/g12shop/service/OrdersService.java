@@ -8,6 +8,8 @@ public interface OrdersService {
 
 	List<Orders> findAll();
 
+	Orders findById(Long id);
+
 	List<Orders> findByOrderStatus();
 
 	Orders insert(Orders order);

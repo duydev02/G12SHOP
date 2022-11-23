@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.g12shop.entity.Users;
 import com.g12shop.service.SessionService;
@@ -38,18 +37,5 @@ public class MyInterceptor implements HandlerInterceptor {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public void postHandle(HttpServletRequest req, HttpServletResponse resp, Object handler, ModelAndView modelandview)
-			throws Exception {
-
-	}
-
-	@Override
-	public void afterCompletion(HttpServletRequest req, HttpServletResponse resp, Object handler, Exception ex)
-			throws Exception {
-		System.out.println("afterCompletion()->" + req.getRequestURI());
-
 	}
 }
