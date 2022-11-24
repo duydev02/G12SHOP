@@ -19,4 +19,6 @@ public interface ProductReviewsService {
 
 	ProductReviews findTopByUserIdOrderByCreatedDateDesc(Long userId);
 
+	void deleteById(Long id);
+
 }

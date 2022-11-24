@@ -87,6 +87,20 @@
 			              </li>
 			            </ul>
 	                </li>
+					<li class="nav-item" th:classappend="${isAdminCommentPage} ? menu-open">
+	                    <a th:href="@{/admin/comment}" class="nav-link" th:classappend="${isAdminCommentPage} ? active">
+	                        <i class="nav-icon fas fa-shopping-cart"></i>
+	                        <p>Comment<i class="right fas fa-angle-left"></i></p>
+	                    </a>
+	                    <ul class="nav nav-treeview">
+			              <li class="nav-item">
+			                <a th:href="@{/admin/comment}" class="nav-link" th:classappend="${isAdminCommentPage} ? active">
+			                  <i class="far fa-circle nav-icon"></i>
+			                  <p>Quản lý</p>
+			                </a>
+			              </li>
+			            </ul>
+	                </li>
 	            </ul>
 	        </nav>
 	        <!-- /.sidebar-menu -->
