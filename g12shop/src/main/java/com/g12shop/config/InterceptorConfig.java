@@ -20,7 +20,7 @@ public class InterceptorConfig implements WebMvcConfigurer{
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(globalInterceptor)
-			.addPathPatterns("/index", "/shop-details/*", "/shop-grid/**", "/about", "/contact", "/cart");
+			.addPathPatterns("/index", "/shop-details/*", "/shop-grid/**", "/about", "/contact", "/cart", "/search");
 //			.excludePathPatterns("/rest/**", "/admin/**", "/user/**");
 		
 		registry.addInterceptor(interceptor)
