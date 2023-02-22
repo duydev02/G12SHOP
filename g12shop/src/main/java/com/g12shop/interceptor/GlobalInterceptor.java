@@ -12,10 +12,10 @@ import com.g12shop.service.CategoriesService;
 
 @Component
 public class GlobalInterceptor implements HandlerInterceptor{
-	
-	@Autowired 
+
+	@Autowired
 	private CategoriesService categoriesService;
-	
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {

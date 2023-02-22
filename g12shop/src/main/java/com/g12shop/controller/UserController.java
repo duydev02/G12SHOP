@@ -58,6 +58,9 @@ public class UserController {
 	@Autowired
 	private OrderDetailsService orderDetailsService;
 
+	@Autowired
+	private HttpServletRequest req;
+
 	@GetMapping("/login")
 	public String doGetLogin(Model model) {
 		model.addAttribute("userRequest", new Users());
@@ -156,29 +159,6 @@ public class UserController {
 		model.addAttribute("order", order);
 		model.addAttribute("orderDetails", orderDetails);
 		return "profile-order::#table-order-details";
-	}
-
-	@PostMapping("/login")
-	public String doPostLogin(@Valid @ModelAttribute("userRequest") Users userRequest, BindingResult result,
-			RedirectAttributes ra, HttpSession session) throws Exception {
-		if (result.hasErrors()) {
-			result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
-			ra.addFlashAttribute("message", "Error, try again!");
-		}
-		try {
-			Users userResponse = usersService.doLogin(userRequest.getUsername(),
-					userRequest.getHashPassword());
-			if (userResponse != null) {
-				session.setAttribute(SessionConstant.CURRENT_USER, userResponse);
-				return "redirect:/index";
-			} else {
-				ra.addFlashAttribute("message", "Mật khẩu không chính xác");
-				return "redirect:/login";
-			}
-		} catch (UserNotFoundExcepion e) {
-			ra.addFlashAttribute("message", e.getMessage());
-			return "redirect:/login";
-		}
 	}
 
 	@PostMapping("/register")
@@ -283,5 +263,43 @@ public class UserController {
 			redirectAttributes.addFlashAttribute("succeedMessage", "Change profile error!");
 		}
 		return "redirect:/profile/" + currenUser.getUsername();
+	}
+
+	@PostMapping("/login")
+	public String doPostLogin(@Valid @ModelAttribute("userRequest") Users userRequest, BindingResult result,
+							  RedirectAttributes ra, HttpSession session) throws Exception {
+		if (result.hasErrors()) {
+			result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+			ra.addFlashAttribute("message", "Error, try again!");
+		}
+		try {
+			Users userResponse = usersService.doLogin(userRequest.getUsername(),
+					userRequest.getHashPassword());
+			if (userResponse != null) {
+				session.setAttribute(SessionConstant.CURRENT_USER, userResponse);
+				return "redirect:/index";
+			} else {
+				ra.addFlashAttribute("message", "Mật khẩu không chính xác");
+				return "redirect:/login";
+			}
+		} catch (UserNotFoundExcepion e) {
+			ra.addFlashAttribute("message", e.getMessage());
+			return "redirect:/login";
+		}
+	}
+
+	@GetMapping("/security/login/success")
+	public String doLoginSuccess(HttpSession session ,RedirectAttributes ra) {
+		session.setAttribute(SessionConstant.CURRENT_USER, usersService.findByUsername(req.getRemoteUser()));
+		ra.addFlashAttribute("alert", "Login successful!");
+		System.out.println("success");
+		return "redirect:/index";
+	}
+
+	@GetMapping("/security/login/error")
+	public String doLoginError(RedirectAttributes ra) {
+		ra.addFlashAttribute("alert", "Login failed, username or password is not correct!");
+		System.out.println("failed");
+		return "redirect:/login";
 	}
 }
